@@ -1,3 +1,7 @@
-# Natural language processing course: `Put name of your project here`
+#Natural language processing course project: 
+#Retrieval-Augmented Generation for the Gaia dataset. 
 
-Please, organize README and the whole structure of the repository to be self-contained and reproducible.
+Guillem Masdemont, Plabon Shaha, Pietro Sestito
+
+
+The first submission of the project is presented in the submission1 folder. 
