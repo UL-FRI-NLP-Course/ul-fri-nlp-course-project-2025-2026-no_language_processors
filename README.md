@@ -1,5 +1,5 @@
-#Natural language processing course project: 
-#Retrieval-Augmented Generation for the Gaia dataset. 
+# Natural language processing course project: 
+# Retrieval-Augmented Generation for the Gaia dataset. 
 
 Guillem Masdemont, Plabon Shaha, Pietro Sestito
 
