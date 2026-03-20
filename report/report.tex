@@ -47,18 +47,15 @@
 \affiliation{\textit{Advisors: Slavko Žitnik}}
 
 % Keywords
-\Keywords{Keyword1, Keyword2, Keyword3 ...}
+\Keywords{}
 \newcommand{\keywordname}{Keywords}
 
 
 %----------------------------------------------------------------------------------------
 %	ABSTRACT
-%----------------------------------------------------------------------------------------
+%---------------------------------------------------------------------------------------
 
-\Abstract{
-The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here. The abstract goes here.
-}
-
+\Abstract{This project aims at enahancing a larger public to get information from one of the most vaste and complex astronomy datasets, the Gaia one, represnting the Milky Way. In order to do so, we plan to implement a retrieval-augmented generation (RAG) system. Such system allows the users to get information through natural language rather than through the use of the Astronomic data query language (ADQL), a SQL-based language.}
 %----------------------------------------------------------------------------------------
 
 \begin{document}
@@ -77,9 +74,14 @@ The abstract goes here. The abstract goes here. The abstract goes here. The abst
 %----------------------------------------------------------------------------------------
 
 \section*{Introduction}
-	These latex files are intended to serve as a the template for the NLP course at FRI.  The template is adapted from the FRI Data Science Project Competition. template  If you find mistakes in the template or have problems using it, please consult Jure Demšar (\href{mailto:jure.demsar@fri.uni-lj.si}{jure.demsar@fri.uni-lj.si}).
 	
-	In the Introduction section you should write about the relevance of your work (what is the purpose of the project, what will we solve) and about related work (what solutions for the problem already exist). Where appropriate, reference scientific work conducted by other researchers. For example, the work done by Demšar et al. \cite{Demsar2016BalancedMixture} is very important for our project. The abbreviation et al. is for et alia, which in latin means and others, we use this abbreviation when there are more than two authors of the work we are citing. If there are two authors (or if there is a single author) we just write down their surnames. For example, the work done by Demšar and Lebar Bajec \cite{Demsar2017LinguisticEvolution} is also important for successful completion of our project.
+The aim of this project is to facilitate the access of a larger general public to the Gaia dataset, a vast and complex relational database on the Milky Way \cite{GaiaMission2016, 2022A&A...667A.148G}.
+Due to the high dimension and complexity of the topic and the dataset, the main current way of getting information from it is through the use of the Astronomic data query language (ADQL), a SQL-based language \cite{GAVIP2016}. 
+In order to make the data more accessible, we propose to implement a retrieval-augmented generation (RAG).
+Such system allows to retrieve relevant information from external data sources, properly process it and finally combine the initial query and the retrieved information to get to a final output, often through a large language model.
+One of the main advantages of such a choice is that it allows the users to get information through natural language. More specifically, considering a representative subsample of the dataset, whose whole dimension is around 10 TB, we will implement a RAG system able to answer to several different kinds of questions.
+The main areas of interest are the spatial distribution, the galactic depth analysis, the photometric characterization and the kinematics of the solar neighborhood.
+
 
 
 %------------------------------------------------

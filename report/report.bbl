@@ -1,0 +1,59 @@
+\begin{thebibliography}{10}
+
+\bibitem{GaiaMission2016}
+{Gaia Collaboration}, T.~{Prusti}, J.~H.~J. {de Bruijne}, A.~G.~A. {Brown},
+  et~al.
+\newblock {The Gaia mission}.
+\newblock {\em Astronomy \& Astrophysics}, 595:A1, 2016.
+
+\bibitem{2022A&A...667A.148G}
+{Gaia Collaboration}, S.~A. {Klioner}, L.~{Lindegren}, F.~{Mignard},
+  J.~{Hern{\'a}ndez}, M.~{Ramos-Lerate}, U.~{Bastian}, M.~{Biermann},
+  A.~{Bombrun}, A.~{de Torres}, and et~al.
+\newblock {Gaia Early Data Release 3: The celestial reference frame
+  (Gaia-CRF3)}.
+\newblock {\em Astronomy \& Astrophysics}, 667:A148, November 2022.
+
+\bibitem{GAVIP2016}
+D.~{Vagg}, D.~{O'Callaghan}, S.~{McBreen}, et~al.
+\newblock {GAVIP: A platform for Gaia data analysis}.
+\newblock In {\em Software and Cyberinfrastructure for Astronomy IV}, volume
+  9913, 2016.
+
+\bibitem{GaiaDR32023}
+{Gaia Collaboration}, A.~{Vallenari}, A.~G.~A. {Brown}, et~al.
+\newblock {Gaia Data Release 3: Summary of the content and survey properties}.
+\newblock {\em Astronomy \& Astrophysics}, 674:A1, 2023.
+
+\bibitem{GaiaDR4_Cosmos}
+{European Space Agency}.
+\newblock {Gaia Data Release 4 (DR4) Content and Survey Properties}.
+\newblock ESA Cosmos Portal, 2026.
+\newblock Accessed: March 2026.
+
+\bibitem{GaiaScanningLaw2012}
+J.~H.~J. {de Bruijne}, R.~{Kohley}, and T.~{Prusti}.
+\newblock {The Gaia mission: status and spacecraft performance}.
+\newblock {\em Proceedings of SPIE}, 8442, 2012.
+
+\bibitem{GaiaDR4_Projected_2026}
+{ESA Gaia DPAC}.
+\newblock {Gaia Data Release 4: Expected Contents and Epoch Photometry Status}.
+\newblock {\em Gaia Technical Note}, 2026.
+
+\bibitem{Guy2022}
+L.~P. {Guy}, A.~{Veronig}, L.~{Eyer}, et~al.
+\newblock {Gaia Data Release 3: Pulsating stars in the Gaia archive}.
+\newblock {\em Astronomy \& Astrophysics}, 674, 2022.
+
+\bibitem{Vagg2016}
+D.~{Vagg}, D.~{O'Callaghan}, S.~{McBreen}, et~al.
+\newblock {GAVIP: A Platform for Gaia Data Analysis}.
+\newblock {\em Proc. SPIE 9913}, 2016.
+
+\bibitem{Fabricius2021}
+C.~{Fabricius}, X.~{Luri}, F.~{Arenou}, et~al.
+\newblock {Gaia Early Data Release 3: Catalogue validation}.
+\newblock {\em Astronomy \& Astrophysics}, 649, 2021.
+
+\end{thebibliography}
