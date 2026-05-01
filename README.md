@@ -64,7 +64,7 @@ The pipeline parses the query, builds a validated ADQL query, confirms the cost 
 ## Future directions
 
 - **Evaluation harness** — Automated scoring of generated ADQL against the ground-truth queries in `src/dataset/queries_1000.csv` (simple / medium / complex tiers).
-- **Retrieval-augmented generation** — Embed Gaia DR3 documentation and create more difficult queries, by creating an LLM that joins the different tools created so far. 
+- **Retrieval-augmented generation** — Embed Gaia DR3 documentation and create more difficult queries. This is planned to be done by integrating an LLM capable of joining several queries into one. 
 
 ## Repository layout
 
