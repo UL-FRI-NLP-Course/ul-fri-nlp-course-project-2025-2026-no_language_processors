@@ -21,6 +21,66 @@
 \documentclass[fleqn,moreauthors,10pt]{ds_report}
 \usepackage[english]{babel}
 
+
+% ── In your preamble (before \begin{document}) ───────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, fit, backgrounds,
+                shapes.geometric, shapes.misc}
+
+\definecolor{colUser}{HTML}{1E3A5F}
+\definecolor{colLLM}{HTML}{6B3FA0}
+\definecolor{colDet}{HTML}{1A6B3C}
+\definecolor{colShared}{HTML}{B45309}
+\definecolor{colSimple}{HTML}{1D4ED8}
+\definecolor{colComplex}{HTML}{9D174D}
+\definecolor{colBgSimple}{HTML}{EFF6FF}
+\definecolor{colBgComplex}{HTML}{FFF1F2}
+\definecolor{colBgShared}{HTML}{FFFBEB}
+
+\tikzset{
+  box/.style={
+    rectangle, rounded corners=4pt,
+    minimum width=3.6cm, minimum height=0.75cm,
+    text centered, font=\small\sffamily,
+    inner sep=5pt, text width=3.4cm,
+    line width=0.6pt
+  },
+  userbox/.style={
+    box, fill=colUser!15, draw=colUser,
+    font=\small\bfseries\sffamily, text=colUser
+  },
+  llmbox/.style={
+    box, fill=colLLM!12, draw=colLLM, text=colLLM
+  },
+  detbox/.style={
+    box, fill=colDet!10, draw=colDet, text=colDet
+  },
+  sharedbox/.style={
+    box, fill=colShared!15, draw=colShared,
+    font=\small\bfseries\sffamily, text=colShared,
+    minimum width=4.2cm, text width=4.0cm
+  },
+  decision/.style={
+    diamond, aspect=2.8,
+    fill=gray!10, draw=gray!60,
+    font=\footnotesize\sffamily,
+    inner sep=2pt, text centered
+  },
+  arr/.style={-{Stealth[length=5pt]}, line width=0.7pt, gray!70},
+  arrS/.style={arr, colSimple, line width=0.8pt},
+  arrC/.style={arr, colComplex, line width=0.8pt},
+  arrSh/.style={arr, colShared!80, line width=0.9pt},
+  lanelabel/.style={
+    font=\footnotesize\bfseries\sffamily,
+    rotate=90, anchor=center
+  },
+  note/.style={
+    font=\scriptsize\sffamily\itshape,
+    text=gray!70, text width=2.8cm, align=center
+  }
+}
+
+
 \graphicspath{{fig/}}
 
 
@@ -104,6 +164,247 @@ Tool-augmented LLMs are a paradigm in which the LLM is augmented with the abilit
 
 Agentic LLMs are a special case of tool-augmented LLMs, in which the LLM is trained to learn how to call multiple tools and how to integrate the results from the tools into its output. The agentic LLM can be trained to learn how to call the tools in a specific order, and how to use the results from the tools to perform complex tasks.
 %------------------------------------------------
+
+\begin{figure*}[htbp]
+  \centering
+  \resizebox{\textwidth}{!}{
+\begin{tikzpicture}[node distance=0.55cm and 1.8cm]
+
+% ════════════════════════════════════════════════════════════════════════
+%  COLUMN ANCHORS  (x positions)
+%  Col A: simple path   x=0
+%  Col B: complex path  x=6.2
+%  Col C: shared        x=3.1  (centred between A and B)
+% ════════════════════════════════════════════════════════════════════════
+
+% ── USER QUERY (top centre) ──────────────────────────────────────────────
+\node[userbox, minimum width=4.2cm, text width=4.0cm]
+  (userquery) at (3.1, 0)
+  {\textbf{User Query}};
+
+% ── ROUTER (LLM) ─────────────────────────────────────────────────────────
+\node[llmbox, below=0.6cm of userquery]
+  (router) at (3.1, -1.1)
+  {Router (LLM)\\[-2pt]{\scriptsize simple / complex}};
+
+% ── ROUTER DECISION ──────────────────────────────────────────────────────
+\node[decision, below=0.5cm of router]
+  (routerdec) {};
+\node[font=\scriptsize\sffamily, anchor=center] at (routerdec) {};
+
+% ════════════════════════════════════════════════════════════════════════
+%  SIMPLE PATH  (left column, x ≈ 0)
+% ════════════════════════════════════════════════════════════════════════
+
+\node[llmbox, below left=1.1cm and 2.2cm of routerdec]
+  (parser) {LLM Parser\\[-2pt]{\scriptsize query → JSON}};
+
+\node[detbox, below=of parser]
+  (jsonval) {JSON Validator};
+
+\node[detbox, below=of jsonval]
+  (buildadql) {build\_adql()};
+
+\node[detbox, below=of buildadql]
+  (adqlval) {ADQL Validator};
+
+% ════════════════════════════════════════════════════════════════════════
+%  COMPLEX PATH  (right column, x ≈ 6.2)
+% ════════════════════════════════════════════════════════════════════════
+
+\node[llmbox, below right=1.1cm and 2.2cm of routerdec]
+  (decomp) {Decomposer (LLM)\\[-2pt]{\scriptsize query → plan JSON}};
+
+\node[detbox, below=of decomp]
+  (planval) {Plan Validator};
+
+% Composition decision
+\node[decision, below=0.5cm of planval, aspect=2.2]
+  (compdec) {};
+\node[font=\scriptsize\sffamily, anchor=west, xshift=0.4cm, yshift=0.3cm] at (compdec)
+  {composition type?};
+
+% Three composition branches
+\node[detbox, below left=1.0cm and 1.6cm of compdec,
+      minimum width=2.6cm, text width=2.4cm]
+  (merged) {build\_adql\_merged()\\[-2pt]{\scriptsize one ADQL}};
+
+\node[detbox, below=1.0cm of compdec,
+      minimum width=2.6cm, text width=2.4cm]
+  (parallel) {Parallel\\[-2pt]{\scriptsize N × supervised\_pipeline}};
+
+\node[detbox, below right=1.0cm and 1.6cm of compdec,
+      minimum width=2.6cm, text width=2.4cm]
+  (sequential) {Sequential\\[-2pt]{\scriptsize source\_id injection}};
+
+% ════════════════════════════════════════════════════════════════════════
+%  SHARED SECTION  (centre, below both paths)
+% ════════════════════════════════════════════════════════════════════════
+
+% Place the cost judge below the lower of adqlval / merged+parallel+sequential
+% We use a coordinate trick: put it at a fixed y below the composition nodes
+\node[sharedbox, below=7.6cm of routerdec]
+  (costjudge)
+  {\textbf{Cost Judge}\\[-2pt]
+   {\scriptsize fast\_cost\_precheck\\[-1pt]
+    evaluate\_query\_cost\\[-1pt]
+    auto\_optimise\_adql}};
+
+\node[decision, below=0.5cm of costjudge, aspect=2.4]
+  (costdec) {};
+\node[font=\scriptsize\sffamily, anchor=center] at (costdec) {verdict?};
+
+% safe / optimise / block
+\node[detbox, below left=0.9cm and 1.5cm of costdec,
+      minimum width=2.4cm, text width=2.2cm,
+      fill=colDet!8, draw=colDet]
+  (optimise) {auto\_optimise\_adql\\[-2pt]{\scriptsize rewrite ADQL}};
+
+\node[userbox, below right=0.9cm and 1.5cm of costdec,
+      minimum width=2.0cm, text width=1.8cm,
+      fill=red!10, draw=red!70, text=red!70]
+  (blocked) {\textbf{BLOCKED}\\[-2pt]{\scriptsize retry / raise}};
+
+\node[detbox, below=0.9cm of costdec,
+      minimum width=2.2cm, text width=2.0cm]
+  (approve) {Approved};
+
+% ── run_query ────────────────────────────────────────────────────────────
+\node[detbox, below=0.7cm of approve,
+      fill=colDet!15, draw=colDet]
+  (runquery) {run\_query()\\[-2pt]{\scriptsize Gaia TAP}};
+
+% ── Output ───────────────────────────────────────────────────────────────
+\node[userbox, below=0.55cm of runquery,
+      minimum width=4.2cm, text width=4.0cm]
+  (output) {\textbf{output\_json + DataFrame}\\[-2pt]
+            {\scriptsize unified schema (both paths)}};
+
+% ════════════════════════════════════════════════════════════════════════
+%  BACKGROUND SHADING
+% ════════════════════════════════════════════════════════════════════════
+\begin{scope}[on background layer]
+
+  % Simple path lane
+  \node[fit=(parser)(jsonval)(buildadql)(adqlval),
+        fill=colBgSimple, draw=colSimple!30,
+        rounded corners=6pt, inner sep=8pt,
+        label={[lanelabel, text=colSimple!70, xshift=-0.1cm]left:Simple Path}]
+    (simplelane) {};
+
+  % Complex path lane
+  \node[fit=(decomp)(planval)(compdec)(merged)(parallel)(sequential),
+        fill=colBgComplex, draw=colComplex!30,
+        rounded corners=6pt, inner sep=8pt,
+        label={[lanelabel, text=colComplex!70, xshift=0.1cm]right:Complex Path}]
+    (complexlane) {};
+
+  % Shared section
+  \node[fit=(costjudge)(costdec)(optimise)(blocked)(approve)(runquery),
+        fill=colBgShared, draw=colShared!30,
+        rounded corners=6pt, inner sep=8pt,
+        label={[lanelabel, text=colShared!80, xshift=-0.1cm]left:Shared}]
+    (sharedlane) {};
+
+\end{scope}
+
+% ════════════════════════════════════════════════════════════════════════
+%  ARROWS
+% ════════════════════════════════════════════════════════════════════════
+
+% User → Router
+\draw[arr] (userquery) -- (router);
+\draw[arr] (router)    -- (routerdec);
+
+% Router → simple path
+\draw[arrS] (routerdec.west) -- ++(-0.5,0)
+  node[above, font=\scriptsize\sffamily, text=colSimple, pos=1.0,
+       xshift=0.2cm, yshift=0.05cm] {simple}
+  -| (parser.north);
+
+% Router → complex path
+\draw[arrC] (routerdec.east) -- ++(0.5,0)
+  node[above, font=\scriptsize\sffamily, text=colComplex, pos=1.0,
+       xshift=-0.2cm, yshift=0.05cm] {complex}
+  -| (decomp.north);
+
+% Simple path internal
+\draw[arrS] (parser)   -- (jsonval);
+\draw[arrS] (jsonval)  -- (buildadql);
+\draw[arrS] (buildadql)-- (adqlval);
+
+% Complex path internal
+\draw[arrC] (decomp)  -- (planval);
+\draw[arrC] (planval) -- (compdec);
+
+% Composition branches
+\draw[arrC] (compdec.west) -- ++(-0.4,0) |-
+  node[pos=0.3, above, font=\scriptsize\sffamily, text=colComplex] {}
+  (merged.north);
+\draw[arrC] (compdec.south) --
+  node[right, font=\scriptsize\sffamily, text=colComplex, xshift=2pt] {}
+  (parallel.north);
+\draw[arrC] (compdec.east) -- ++(0.4,0) |-
+  node[pos=0.3, above, font=\scriptsize\sffamily, text=colComplex] {}
+  (sequential.north);
+
+% Both paths converge on cost judge
+% Simple: adqlval → costjudge
+\draw[arrSh] (adqlval.south) -- ++(0,-0.3) -|
+  (costjudge.north west);
+
+% Complex merged: merged → costjudge
+\draw[arrSh] (merged.south) -- ++(0,-0.3) -|
+  (costjudge.north);
+
+% Complex parallel/sequential go through supervised_pipeline (already has cost judge)
+% Show them converging too
+\draw[arrSh] (parallel.south)   -- ++(0,-0.25) -| (costjudge.north);
+\draw[arrSh] (sequential.south) -- ++(0,-0.25) -| (costjudge.north east);
+
+% Cost judge → decision
+\draw[arrSh] (costjudge) -- (costdec);
+
+% Cost decision branches
+\draw[arrSh] (costdec.west) -- ++(-0.4,0) |-
+  node[pos=0.25, above, font=\scriptsize\sffamily,
+       text=colShared] {unsafe}
+  (optimise.north);
+\draw[arrSh] (costdec.south) --
+  node[right, font=\scriptsize\sffamily,
+       text=colShared, xshift=2pt] {safe}
+  (approve.north);
+\draw[arrSh] (costdec.east) -- ++(0.4,0) |-
+  node[pos=0.25, above, font=\scriptsize\sffamily,
+       text=red!60] {dangerous}
+  (blocked.north);
+
+% Optimised ADQL loops back to cost judge
+\draw[arrSh, dashed] (optimise.west) -- ++(-0.5,0) |-
+  (costjudge.west);
+
+% Approve → run_query → output
+\draw[arrSh] (approve)  -- (runquery);
+\draw[arrSh] (runquery) -- (output);
+
+% ════════════════════════════════════════════════════════════════════════
+%  LEGEND
+% ════════════════════════════════════════════════════════════════════════
+\node[below=0.5cm of output, xshift=0cm,
+      font=\scriptsize\sffamily, text=gray!60,
+      align=center]
+  (legend)
+  {\textcolor{colLLM}{$\rule{0.7em}{0.7em}$}~LLM call\quad
+   \textcolor{colDet}{$\rule{0.7em}{0.7em}$}~Deterministic\quad
+   \textcolor{colShared}{$\rule{0.7em}{0.7em}$}~Shared (both paths)\quad
+   \textcolor{colUser}{$\rule{0.7em}{0.7em}$}~Input / Output};
+
+\end{tikzpicture}
+  }
+  \caption{Gaia intelligent query pipeline.}
+  \label{fig:pipeline}
+\end{figure*}
+
 
 \section*{Proposed project dataset/corpus/data/..}
 

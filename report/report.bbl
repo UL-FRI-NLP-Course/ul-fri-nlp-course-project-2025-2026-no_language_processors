@@ -1,24 +1,19 @@
 \begin{thebibliography}{10}
 
 \bibitem{GaiaMission2016}
-{Gaia Collaboration}, T.~{Prusti}, J.~H.~J. {de Bruijne}, A.~G.~A. {Brown},
-  et~al.
+{Gaia Collaboration}, T.~{Prusti}, J.~H.~J. {de Bruijne}, A.~G.~A. {Brown}, et~al.
 \newblock {The Gaia mission}.
 \newblock {\em Astronomy \& Astrophysics}, 595:A1, 2016.
 
 \bibitem{2022A&A...667A.148G}
-{Gaia Collaboration}, S.~A. {Klioner}, L.~{Lindegren}, F.~{Mignard},
-  J.~{Hern{\'a}ndez}, M.~{Ramos-Lerate}, U.~{Bastian}, M.~{Biermann},
-  A.~{Bombrun}, A.~{de Torres}, and et~al.
-\newblock {Gaia Early Data Release 3: The celestial reference frame
-  (Gaia-CRF3)}.
+{Gaia Collaboration}, S.~A. {Klioner}, L.~{Lindegren}, F.~{Mignard}, J.~{Hern{\'a}ndez}, M.~{Ramos-Lerate}, U.~{Bastian}, M.~{Biermann}, A.~{Bombrun}, A.~{de Torres}, and et~al.
+\newblock {Gaia Early Data Release 3: The celestial reference frame (Gaia-CRF3)}.
 \newblock {\em Astronomy \& Astrophysics}, 667:A148, November 2022.
 
 \bibitem{GAVIP2016}
 D.~{Vagg}, D.~{O'Callaghan}, S.~{McBreen}, et~al.
 \newblock {GAVIP: A platform for Gaia data analysis}.
-\newblock In {\em Software and Cyberinfrastructure for Astronomy IV}, volume
-  9913, 2016.
+\newblock In {\em Software and Cyberinfrastructure for Astronomy IV}, volume 9913, 2016.
 
 \bibitem{GaiaDR32023}
 {Gaia Collaboration}, A.~{Vallenari}, A.~G.~A. {Brown}, et~al.
