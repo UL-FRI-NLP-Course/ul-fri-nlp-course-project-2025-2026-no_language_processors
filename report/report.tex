@@ -126,7 +126,7 @@ queries are safe to execute before submission. We evaluate the architecture on a
 
 The Gaia space telescope, launched in 2013 by the European Space Agency (ESA), aims to produce the most detailed map of the Milky Way ever assembled, cataloguing approximately one billion stars with astrometric, photometric, and spectroscopic measurements \cite{GaiaMission2016}. The most recent public release, Gaia Data Release 3 (DR3, 2022), contains 1.8 billion sources described by 258 catalogue fields \cite{GaiaDR32023}, occupying $10$ TB. 
 
-Access to the data is mediated through the \href{https://archives.esac.esa.int/gaia}{Gaia Archive}, which exposes a Table Access Protocol (TAP) endpoint that accepts queries written in the Astronomical Data Query Language (ADQL\footnote{a dialect of SQL extended with geometric predicates for sky-coordinate filtering (e.g. \texttt{CONTAINS}, \texttt{CIRCLE}, \texttt{POINT}). }) \cite{GAVIP2016}. While ADQL is well-suited to the domain, executing queries programmatically within our framework poses several barriers. The \textit{astroquery.gaia} Python library is prone to connection timeouts, and on the ARNES cluster, stable \textit{TAP access} requires establishing an SSH tunnel to bypass network restrictions. Beyond this, queries against a 1.8-billion-row table are inherently delicate, and errors occur even for tightly constrained queries.
+Access to the data is mediated through the \href{https://archives.esac.esa.int/gaia}{Gaia Archive}, which exposes a Table Access Protocol (TAP) endpoint that accepts queries written in the Astronomical Data Query Language (ADQL\footnote{a dialect of SQL extended with geometric predicates for sky-coordinate filtering (e.g. \texttt{CONTAINS}, \texttt{CIRCLE}, \texttt{POINT}). }) \cite{GAVIP2016}. While ADQL is well-suited to the domain, executing queries programmatically within this framework poses several barriers. The \textit{astroquery.gaia} Python library is prone to connection timeouts, and on the ARNES cluster, stable \textit{TAP access} requires establishing an SSH tunnel to bypass network restrictions. Beyond this, queries against a 1.8-billion-row table are inherently delicate, and errors occur even for tightly constrained queries.
 
 Our project builds a natural language pipeline that translates human-written 
 questions into valid, safe, and executable ADQL queries for Gaia. Our problem 
@@ -240,7 +240,7 @@ that resolve to a single ADQL, and queries with conjunctions
 (``\emph{and also}'', ``\emph{compare}'') that require multiple queries. 
 The router defaults to \emph{simple} when in doubt, reducing unnecessary use 
 of the complex path. Sampling is deterministic with \texttt{temperature=0}. 
-The query is then routed to either the simple or complex path:
+The query is then routed to either the simple or complex path.
 
 \begin{figure}[t]
   \centering
@@ -385,7 +385,7 @@ exception or a 10-second timeout). Results are displayed in Figure \ref{fig:eval
 
 Figure~\ref{fig:eval} shows the outcome distribution per intent. Overall, 22 out 
 of 40 queries (55\%) are at least structurally close to the reference, with 11 
-fully valid and 11 near-misses, giving a strict pass rate of 28\%. The HR diagram  intent performs best, as its fixed mandatory clauses leave little room for the model to drift. Cone search and nearest neighbours share the same distribution, with most failures concentrated in the spatial radius check. This is the least critical constraint, since a slightly wrong radius still retrieves a meaningful dataset. The 11 near-misses are the most rellevant finding: each of these queries fails on exactly one check, meaning a single targeted correction would make them fully valid. This suggests that improvements to coordinate resolution and intent disambiguation would yield large gains without any architectural changes to the pipeline
+fully valid and 11 near-misses, giving a strict pass rate of 28\%. The HR diagram  intent performs best, as its fixed mandatory clauses leave little room for the model to drift. Cone search and nearest neighbours share the same distribution, with most failures concentrated in the spatial radius check. This is the least critical constraint, since a slightly wrong radius still retrieves a meaningful dataset. The 11 near-misses are the most relevant finding: each of these queries fails on exactly one check, meaning a single targeted correction would make them fully valid. This suggests that improvements to coordinate resolution and intent disambiguation would yield large gains without any architectural changes to the pipeline.
 
 \section{Conclusion}
 
