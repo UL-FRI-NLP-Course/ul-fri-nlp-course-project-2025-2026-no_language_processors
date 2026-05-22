@@ -2,7 +2,9 @@
 ### Natural Language Interface for the ESA Gaia DR3 Catalogue
 
 **Guillem Masdemont Serra · Pietro Sestito · Plabon Shaha**  
-*FRI Natural Language Processing Course 2026 — Advisor: Slavko Žitnik*
+*FRI Natural Language Processing Course 2026*, *Advisor: Aleš Žagar*
+
+*Erasmus Mundus Joint Master in Artificial Intelligence — 2nd Semester, University of Ljubljana*
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License: Apache 2.0"></a>
@@ -48,7 +50,9 @@ The system parses the intent, builds a validated and cost-checked ADQL query, ex
 
 ## Pipeline Architecture
 
-![Pipeline architecture](report/fig/pipeline.png)
+<p align="center">
+  <img src="report/fig/pipeline.png" alt="Pipeline architecture" width="500">
+</p>
 
 ### Simple vs. Complex path
 
@@ -195,9 +199,7 @@ Pre-generated example reports are in `src/output/displayed_html/`.
 
 ## Authors & Acknowledgements
 
-- **Guillem Masdemont Serra** — pipeline architecture, parser, cost judge, evaluation
-- **Pietro Sestito** — complex pipeline, decomposer, plan validator
-- **Plabon Shaha** — dataset generation, evaluation harness, HTML reporting
+We acknowledge and thanks the guidance of Prof. Mercè Romero-Gómez, researcher at the Institute of Cosmos Sciences of the University of Barcelona (ICCUB) and member of the ESA Gaia Data Processing and Analysis Consortium (DPAC).
 
-Advisor: **Slavko Žitnik** (FRI, University of Ljubljana)  
+Advisor: **Aleš Žagar** (FRI, University of Ljubljana)  
 Course: NLP Course 2025–2026
