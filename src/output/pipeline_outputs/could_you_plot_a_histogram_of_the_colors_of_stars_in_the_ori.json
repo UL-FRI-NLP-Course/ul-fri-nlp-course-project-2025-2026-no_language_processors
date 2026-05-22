@@ -1,0 +1,38 @@
+{
+  "query": "Could you plot a histogram of the colors of stars in the Orion Nebula that are brighter than magnitude 6?",
+  "routed_as": "simple",
+  "composition": "simple",
+  "outer_attempt": 1,
+  "plan": {
+    "intent": "color_histogram",
+    "ra": 5.76,
+    "dec": 4.39,
+    "radius": 1.0,
+    "filters": {
+      "phot_g_mean_mag": {
+        "max": 6.0
+      }
+    },
+    "join_table": null,
+    "limit": 1000,
+    "source_id_filter_size": 0
+  },
+  "execution": [
+    {
+      "step_id": 1,
+      "intent": "color_histogram",
+      "status": "success",
+      "adql": "SELECT TOP 1000 source_id, bp_rp, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, ra, dec, pmra, pmdec FROM gaiadr3.gaia_source WHERE 1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 5.76, 4.39, 1.0)) AND bp_rp IS NOT NULL AND phot_g_mean_mag <= 6.0 ORDER BY random_index",
+      "rows_returned": 0,
+      "duration_seconds": 5.96,
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_steps": 1,
+    "successful": 1,
+    "failed": 0,
+    "skipped": 0,
+    "total_duration_seconds": 5.96
+  }
+}

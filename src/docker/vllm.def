@@ -1,0 +1,148 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# Build:
+#   apptainer build vllm.sif vllm.def           # as root, or via --fakeroot
+#   apptainer build --fakeroot vllm.sif vllm.def
+# ──────────────────────────────────────────────────────────────────────────────
+
+Bootstrap: docker
+From: nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+
+# ── Labels ────────────────────────────────────────────────────────────────────
+%labels
+    Maintainer  no-language-processors
+    Version     1.4
+    Description vLLM + HuggingFace inference container (CUDA 12.4)
+
+# ── Environment variables set at container run-time ──────────────────────────
+%environment
+    export DEBIAN_FRONTEND=noninteractive
+    export PYTHONDONTWRITEBYTECODE=1
+    export PYTHONUNBUFFERED=1
+
+    # HuggingFace — point cache to the bind-mounted host directory
+    export HF_HOME=/scratch/hf_cache
+    export TRANSFORMERS_CACHE=/scratch/hf_cache
+    export HUGGINGFACE_HUB_VERBOSITY=warning
+
+    # CUDA
+    export CUDA_HOME=/usr/local/cuda
+    export PATH=$CUDA_HOME/bin:$PATH
+    export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+
+    # vLLM tunables (can be overridden at runtime via --env flags in sbatch)
+    export VLLM_WORKER_MULTIPROC_METHOD=spawn
+    export TOKENIZERS_PARALLELISM=false
+
+# ── Build steps ───────────────────────────────────────────────────────────────
+%post
+    [ -z "$BASH_VERSION" ] && exec /bin/bash "$0" "$@"
+    set -eu
+    export DEBIAN_FRONTEND=noninteractive
+
+    # System packages
+    apt-get update -qq && apt-get install -y --no-install-recommends \
+        python3.11 \
+        python3.11-dev \
+        python3-pip \
+        python3.11-venv \
+        git \
+        wget \
+        curl \
+        build-essential \
+        ninja-build \
+        libhdf5-dev \
+        libffi-dev \
+        && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+    # Make python3.11 the default python3 / pip
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
+    update-alternatives --install /usr/bin/python  python  /usr/bin/python3.11 1
+    python3 -m pip install --upgrade pip setuptools wheel
+
+    # ── PyTorch (must come first — other packages link against it) ────────────
+    pip install --no-cache-dir \
+        torch==2.4.1+cu124 \
+        torchvision==0.19.1+cu124 \
+        torchaudio==2.4.1+cu124 \
+        --extra-index-url https://download.pytorch.org/whl/cu124
+
+    # ── vLLM + HuggingFace stack ──────────────────────────────────────────────
+    pip install --no-cache-dir \
+        vllm==0.6.6.post1 \
+        "transformers>=4.45.0,<4.50.0" \
+        accelerate \
+        huggingface_hub \
+        sentencepiece \
+        tiktoken \
+        protobuf \
+        datasets \
+        tokenizers \
+        peft \
+        trl
+
+    # ── Data science & visualisation ──────────────────────────────────────────
+    pip install --no-cache-dir \
+        numpy \
+        pandas \
+        scipy \
+        scikit-learn \
+        matplotlib \
+        seaborn \
+        plotly \
+        kaleido \
+        astroquery \
+        astropy \
+        h5py
+
+    # ── Jupyter stack ─────────────────────────────────────────────────────────
+    pip install --no-cache-dir \
+        jupyterlab \
+        ipywidgets \
+        ipykernel \
+        nbformat \
+        nbconvert \
+        jupyter_contrib_nbextensions
+
+    # ── Utilities ─────────────────────────────────────────────────────────────
+    pip install --no-cache-dir \
+        requests \
+        tqdm \
+        rich \
+        typer \
+        pydantic \
+        python-dotenv \
+        einops \
+        safetensors \
+        bitsandbytes
+
+    # ── Fix: pyairports stub ──────────────────────────────────────────────────
+    SITE=$(python3 -c "import site; print(site.getsitepackages()[0])")
+    mkdir -p "$SITE/pyairports"
+    touch "$SITE/pyairports/__init__.py"
+    printf 'Airport = None\nAIRPORT_LIST = []\n' > "$SITE/pyairports/airports.py"
+
+    # Create workspace directories
+    mkdir -p /workspace /scratch/hf_cache
+
+    echo "Build complete: $(date)"
+
+# ── Startup behaviour ─────────────────────────────────────────────────────────
+%runscript
+    # If no arguments are passed, default to starting Jupyter Lab
+    if [ $# -eq 0 ]; then
+        echo "Starting Jupyter Lab (default behaviour)..."
+        exec jupyter lab --ip=0.0.0.0 --no-browser --allow-root
+    else
+        # Otherwise, execute whatever the user passed
+        exec "$@"
+    fi
+
+# ── Help text ─────────────────────────────────────────────────────────────────
+%help
+    This container packages vLLM with CUDA 12.4 and Jupyter Lab.
+
+    To run as a Jupyter Server:
+      apptainer run --nv vllm.sif --port=8888
+
+    To run a specific script:
+      apptainer exec --nv vllm.sif python my_script.py

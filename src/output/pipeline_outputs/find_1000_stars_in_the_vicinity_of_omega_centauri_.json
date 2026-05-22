@@ -1,0 +1,34 @@
+{
+  "query": "Find 1000 stars in the vicinity of Omega Centauri.",
+  "routed_as": "simple",
+  "composition": "simple",
+  "outer_attempt": 1,
+  "plan": {
+    "intent": "cone_search",
+    "ra": 201.7,
+    "dec": -47.5,
+    "radius": 1.0,
+    "filters": {},
+    "join_table": null,
+    "limit": 1000,
+    "source_id_filter_size": 0
+  },
+  "execution": [
+    {
+      "step_id": 1,
+      "intent": "cone_search",
+      "status": "success",
+      "adql": "SELECT TOP 1000 source_id, ra, dec, phot_g_mean_mag, bp_rp, pmra, pmdec FROM gaiadr3.gaia_source WHERE 1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 201.7, -47.5, 1.0)) ORDER BY random_index",
+      "rows_returned": 0,
+      "duration_seconds": 3.96,
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_steps": 1,
+    "successful": 1,
+    "failed": 0,
+    "skipped": 0,
+    "total_duration_seconds": 3.96
+  }
+}

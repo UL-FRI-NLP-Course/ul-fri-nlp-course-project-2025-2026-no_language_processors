@@ -1,0 +1,34 @@
+{
+  "query": "Can you plot an HR diagram for the 300 nearest stars in the Orion constellation?",
+  "routed_as": "simple",
+  "composition": "simple",
+  "outer_attempt": 1,
+  "plan": {
+    "intent": "hr_diagram",
+    "ra": 83.8,
+    "dec": 4.7,
+    "radius": 2.0,
+    "filters": {},
+    "join_table": null,
+    "limit": 300,
+    "source_id_filter_size": 0
+  },
+  "execution": [
+    {
+      "step_id": 1,
+      "intent": "hr_diagram",
+      "status": "success",
+      "adql": "SELECT TOP 300 source_id, parallax, phot_g_mean_mag, bp_rp, ra, dec, pmra, pmdec, (phot_g_mean_mag + 5*LOG10(parallax/100)) AS abs_g_mag FROM gaiadr3.gaia_source WHERE 1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 83.8, 4.7, 2.0)) AND parallax > 1 AND bp_rp IS NOT NULL ORDER BY random_index",
+      "rows_returned": 0,
+      "duration_seconds": 4.34,
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_steps": 1,
+    "successful": 1,
+    "failed": 0,
+    "skipped": 0,
+    "total_duration_seconds": 4.34
+  }
+}

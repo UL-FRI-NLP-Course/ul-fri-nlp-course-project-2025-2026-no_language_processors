@@ -1,0 +1,42 @@
+{
+  "query": "Can you find me some bright stars around the Orion Nebula with a low radial velocity?",
+  "routed_as": "simple",
+  "composition": "simple",
+  "outer_attempt": 1,
+  "plan": {
+    "intent": "cone_search",
+    "ra": 5.76,
+    "dec": 4.39,
+    "radius": 1.0,
+    "filters": {
+      "phot_g_mean_mag": {
+        "max": 5.0
+      },
+      "radial_velocity": {
+        "min": -200,
+        "max": 0
+      }
+    },
+    "join_table": null,
+    "limit": 1000,
+    "source_id_filter_size": 0
+  },
+  "execution": [
+    {
+      "step_id": 1,
+      "intent": "cone_search",
+      "status": "success",
+      "adql": "SELECT TOP 1000 source_id, ra, dec, phot_g_mean_mag, radial_velocity, bp_rp, pmra, pmdec FROM gaiadr3.gaia_source WHERE 1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 5.76, 4.39, 1.0)) AND phot_g_mean_mag <= 5.0 AND radial_velocity BETWEEN -200 AND 0 ORDER BY random_index",
+      "rows_returned": 0,
+      "duration_seconds": 4.86,
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_steps": 1,
+    "successful": 1,
+    "failed": 0,
+    "skipped": 0,
+    "total_duration_seconds": 4.86
+  }
+}

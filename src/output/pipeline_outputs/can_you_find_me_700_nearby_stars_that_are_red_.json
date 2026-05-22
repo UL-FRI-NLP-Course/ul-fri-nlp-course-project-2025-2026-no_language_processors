@@ -1,0 +1,39 @@
+{
+  "query": "Can you find me 700 nearby stars that are red?",
+  "routed_as": "simple",
+  "composition": "simple",
+  "outer_attempt": 1,
+  "plan": {
+    "intent": "stellar_population",
+    "ra": null,
+    "dec": null,
+    "radius": null,
+    "filters": {
+      "teff_gspphot": {
+        "min": 3500,
+        "max": 4500
+      }
+    },
+    "join_table": null,
+    "limit": 700,
+    "source_id_filter_size": 0
+  },
+  "execution": [
+    {
+      "step_id": 1,
+      "intent": "stellar_population",
+      "status": "success",
+      "adql": "SELECT TOP 700 source_id, ra, dec, teff_gspphot, phot_g_mean_mag, bp_rp, pmra, pmdec FROM gaiadr3.gaia_source WHERE teff_gspphot IS NOT NULL AND teff_gspphot BETWEEN 3500 AND 4500 ORDER BY random_index",
+      "rows_returned": 0,
+      "duration_seconds": 4.76,
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_steps": 1,
+    "successful": 1,
+    "failed": 0,
+    "skipped": 0,
+    "total_duration_seconds": 4.76
+  }
+}

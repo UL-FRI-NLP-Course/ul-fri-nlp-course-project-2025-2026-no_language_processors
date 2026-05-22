@@ -1,0 +1,36 @@
+{
+  "query": "Find the 750 nearest stars to us that are variable.",
+  "routed_as": "simple",
+  "composition": "simple",
+  "outer_attempt": 1,
+  "plan": {
+    "intent": "variability_search",
+    "ra": 266.4,
+    "dec": -29.0,
+    "radius": 1.0,
+    "filters": {
+      "phot_variable_flag": "VARIABLE"
+    },
+    "join_table": null,
+    "limit": 750,
+    "source_id_filter_size": 0
+  },
+  "execution": [
+    {
+      "step_id": 1,
+      "intent": "variability_search",
+      "status": "success",
+      "adql": "SELECT TOP 750 source_id, ra, dec, phot_g_mean_mag, phot_variable_flag, bp_rp, pmra, pmdec FROM gaiadr3.gaia_source WHERE 1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 266.4, -29.0, 1.0)) AND phot_variable_flag = 'VARIABLE' ORDER BY random_index",
+      "rows_returned": 0,
+      "duration_seconds": 6.84,
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_steps": 1,
+    "successful": 1,
+    "failed": 0,
+    "skipped": 0,
+    "total_duration_seconds": 6.84
+  }
+}

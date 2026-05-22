@@ -1,0 +1,36 @@
+{
+  "query": "Are there any variable stars in the Pleiades cluster?",
+  "routed_as": "simple",
+  "composition": "simple",
+  "outer_attempt": 1,
+  "plan": {
+    "intent": "variability_search",
+    "ra": 56.75,
+    "dec": 24.12,
+    "radius": 1.0,
+    "filters": {
+      "phot_variable_flag": "VARIABLE"
+    },
+    "join_table": null,
+    "limit": 1000,
+    "source_id_filter_size": 0
+  },
+  "execution": [
+    {
+      "step_id": 1,
+      "intent": "variability_search",
+      "status": "success",
+      "adql": "SELECT TOP 1000 source_id, ra, dec, phot_g_mean_mag, phot_variable_flag, bp_rp, pmra, pmdec FROM gaiadr3.gaia_source WHERE 1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 56.75, 24.12, 1.0)) AND phot_variable_flag = 'VARIABLE' ORDER BY random_index",
+      "rows_returned": 0,
+      "duration_seconds": 4.25,
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_steps": 1,
+    "successful": 1,
+    "failed": 0,
+    "skipped": 0,
+    "total_duration_seconds": 4.25
+  }
+}

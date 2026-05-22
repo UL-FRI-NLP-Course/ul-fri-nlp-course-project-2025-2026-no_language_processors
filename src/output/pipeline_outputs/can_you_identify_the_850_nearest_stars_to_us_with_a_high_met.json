@@ -1,0 +1,38 @@
+{
+  "query": "Can you identify the 850 nearest stars to us with a high metallicity?",
+  "routed_as": "simple",
+  "composition": "simple",
+  "outer_attempt": 1,
+  "plan": {
+    "intent": "nearest_neighbours",
+    "ra": null,
+    "dec": null,
+    "radius": null,
+    "filters": {
+      "mh_gspphot": {
+        "min": 0.5
+      }
+    },
+    "join_table": null,
+    "limit": 850,
+    "source_id_filter_size": 0
+  },
+  "execution": [
+    {
+      "step_id": 1,
+      "intent": "nearest_neighbours",
+      "status": "success",
+      "adql": "SELECT TOP 850 parallax, source_id, ra, dec, phot_g_mean_mag, mh_gspphot, bp_rp, pmra, pmdec FROM gaiadr3.gaia_source WHERE MOD(random_index, 10000) = 0 AND parallax > 1 AND mh_gspphot >= 0.5 ORDER BY parallax DESC",
+      "rows_returned": 0,
+      "duration_seconds": 5.46,
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_steps": 1,
+    "successful": 1,
+    "failed": 0,
+    "skipped": 0,
+    "total_duration_seconds": 5.46
+  }
+}

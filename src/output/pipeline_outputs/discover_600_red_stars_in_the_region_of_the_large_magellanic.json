@@ -1,0 +1,39 @@
+{
+  "query": "Discover 600 red stars in the region of the Large Magellanic Cloud.",
+  "routed_as": "simple",
+  "composition": "simple",
+  "outer_attempt": 1,
+  "plan": {
+    "intent": "stellar_population",
+    "ra": 80.9,
+    "dec": -69.8,
+    "radius": 2.0,
+    "filters": {
+      "teff_gspphot": {
+        "min": 2400,
+        "max": 3900
+      }
+    },
+    "join_table": null,
+    "limit": 600,
+    "source_id_filter_size": 0
+  },
+  "execution": [
+    {
+      "step_id": 1,
+      "intent": "stellar_population",
+      "status": "success",
+      "adql": "SELECT TOP 600 source_id, ra, dec, teff_gspphot, logg_gspphot, bp_rp, phot_g_mean_mag, pmra, pmdec FROM gaiadr3.gaia_source WHERE 1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 80.9, -69.8, 2.0)) AND teff_gspphot IS NOT NULL AND logg_gspphot IS NOT NULL AND teff_gspphot BETWEEN 2400 AND 3900 ORDER BY random_index",
+      "rows_returned": 0,
+      "duration_seconds": 5.56,
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_steps": 1,
+    "successful": 1,
+    "failed": 0,
+    "skipped": 0,
+    "total_duration_seconds": 5.56
+  }
+}

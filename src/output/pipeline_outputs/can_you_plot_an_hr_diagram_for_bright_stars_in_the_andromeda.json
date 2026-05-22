@@ -1,0 +1,38 @@
+{
+  "query": "Can you plot an HR diagram for bright stars in the Andromeda galaxy with a good parallax measurement?",
+  "routed_as": "simple",
+  "composition": "simple",
+  "outer_attempt": 1,
+  "plan": {
+    "intent": "hr_diagram",
+    "ra": 210.0,
+    "dec": 41.0,
+    "radius": 1.0,
+    "filters": {
+      "parallax": {
+        "min": 0.1
+      }
+    },
+    "join_table": null,
+    "limit": 1000,
+    "source_id_filter_size": 0
+  },
+  "execution": [
+    {
+      "step_id": 1,
+      "intent": "hr_diagram",
+      "status": "success",
+      "adql": "SELECT TOP 1000 source_id, parallax, phot_g_mean_mag, bp_rp, ra, dec, pmra, pmdec, (phot_g_mean_mag + 5*LOG10(parallax/100)) AS abs_g_mag FROM gaiadr3.gaia_source WHERE 1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 210.0, 41.0, 1.0)) AND parallax > 0 AND bp_rp IS NOT NULL AND parallax >= 0.1 ORDER BY random_index",
+      "rows_returned": 0,
+      "duration_seconds": 4.98,
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_steps": 1,
+    "successful": 1,
+    "failed": 0,
+    "skipped": 0,
+    "total_duration_seconds": 4.98
+  }
+}
