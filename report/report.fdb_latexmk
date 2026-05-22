@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex report"] 1779433545.21584 "report.aux" "report.bbl" "report" 1779447019.97017 0
+["bibtex report"] 1779433545.21584 "report.aux" "report.bbl" "report" 1779468950.14167 0
   "./report.bib" 1779375464.10557 6298 74ac109803c39da66f4c84fb46264c54 ""
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/base/unsrt.bst" 1292289607 18030 1376b4b231b50c66211e47e42eda2875 ""
-  "report.aux" 1779447019.3101 5625 2b6a9816cb76d42a0f4686d159306649 "pdflatex"
+  "report.aux" 1779468949.47224 5625 2b6a9816cb76d42a0f4686d159306649 "pdflatex"
   (generated)
   "report.bbl"
   "report.blg"
   (rewritten before read)
-["pdflatex"] 1779447016.72243 "/Users/guillemmasdemont/Documents/Master/Ljubljana courses/NLP/docker_environment/ul-fri-nlp-course-project-2025-2026-no_language_processors/report/report.tex" "report.pdf" "report" 1779447019.97048 0
-  "/Users/guillemmasdemont/Documents/Master/Ljubljana courses/NLP/docker_environment/ul-fri-nlp-course-project-2025-2026-no_language_processors/report/report.tex" 1779447016.45344 23139 bdf0cc1a9df3d2ec1b255a36cb309c5f ""
+["pdflatex"] 1779468947.02676 "/Users/guillemmasdemont/Documents/Master/Ljubljana courses/NLP/docker_environment/ul-fri-nlp-course-project-2025-2026-no_language_processors/report/report.tex" "report.pdf" "report" 1779468950.14196 0
+  "/Users/guillemmasdemont/Documents/Master/Ljubljana courses/NLP/docker_environment/ul-fri-nlp-course-project-2025-2026-no_language_processors/report/report.tex" 1779468946.70904 23129 5525da3d710e1939377ee1e059f5f4ab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
@@ -235,10 +235,10 @@
   "fig/image.png" 1779379267.35046 553559 7be210360328f6cd0dc1c51504feda4a ""
   "fig/pipeline.pdf" 1779305182.80944 52171 dc26b22d6614913ec23301328bed7c38 ""
   "logo.png" 1773830236.68831 41371 2601fc595c820b12f058a398ce9309ab ""
-  "report.aux" 1779447019.3101 5625 2b6a9816cb76d42a0f4686d159306649 "pdflatex"
+  "report.aux" 1779468949.47224 5625 2b6a9816cb76d42a0f4686d159306649 "pdflatex"
   "report.bbl" 1779433545.41853 1956 c70df21628747fa95d1943f3112fbc0f "bibtex report"
-  "report.out" 1779447019.31185 1298 59cd7f7e306757d813a5d9f491b3c000 "pdflatex"
-  "report.tex" 1779447016.45344 23139 bdf0cc1a9df3d2ec1b255a36cb309c5f ""
+  "report.out" 1779468949.47387 1298 59cd7f7e306757d813a5d9f491b3c000 "pdflatex"
+  "report.tex" 1779468946.70904 23129 5525da3d710e1939377ee1e059f5f4ab ""
   (generated)
   "report.aux"
   "report.log"

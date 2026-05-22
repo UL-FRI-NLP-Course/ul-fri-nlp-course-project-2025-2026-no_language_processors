@@ -105,12 +105,12 @@
 %----------------------------------------------------------------------------------------
 
 \Abstract{
-Accessing the ESA Gaia Data Release 3 (DR3) catalogue requires expertise in the Astronomical Data Query Language (ADQL) and careful query optimisation to avoid server timeouts,  creating a significant barrier for non-specialist users. To address this, we 
+Accessing the ESA Gaia Data Release 3 (DR3) catalogue requires expertise in the Astronomical Data Query Language (ADQL) and careful query optimisation to avoid server timeouts,  creating a significant barrier to non-specialist users. To address this, we 
 present a natural language pipeline that translates human-made questions into 
 valid, safe, and executable ADQL queries, building on decomposition and 
 self-correction strategies from the text-to-SQL literature. The pipeline 
 features a two-path architecture governed by a shared cost judge that ensures 
-queries are safe to execute before submission. We evaluate the architecture on a custom dataset and we achieve a 55\% rate of structurally correct or near-correct queries. We present the results through an interactive HTML interface.}
+queries are safe to execute before submission. We evaluate the architecture on a custom dataset achieving a 55\% rate of structurally correct or near-correct queries. We present the results through an interactive HTML interface.}
 
 \begin{document}
 
@@ -318,7 +318,7 @@ Before any query is built, a deterministic validator checks that the plan is
 coherent: merged plans must have at least two compatible intents and a defined 
 spatial region; sequential plans must have no circular dependencies; and any 
 intent requiring a spatial cone must have a region specified. Only once the 
-plan passes validation does the pipeline proceed to execution.
+plan passes validation the pipeline proceeds to execution.
 
 \paragraph{Composition modes (executor)}
 The validated plan is then executed according to its composition type, producing 
