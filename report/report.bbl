@@ -1,54 +1,42 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{1}
 
 \bibitem{GaiaMission2016}
-{Gaia Collaboration}, T.~{Prusti}, J.~H.~J. {de Bruijne}, A.~G.~A. {Brown}, et~al.
-\newblock {The Gaia mission}.
+{Gaia Collaboration}, T.~Prusti, et~al.
+\newblock The {Gaia} mission.
 \newblock {\em Astronomy \& Astrophysics}, 595:A1, 2016.
 
-\bibitem{2022A&A...667A.148G}
-{Gaia Collaboration}, S.~A. {Klioner}, L.~{Lindegren}, F.~{Mignard}, J.~{Hern{\'a}ndez}, M.~{Ramos-Lerate}, U.~{Bastian}, M.~{Biermann}, A.~{Bombrun}, A.~{de Torres}, and et~al.
-\newblock {Gaia Early Data Release 3: The celestial reference frame (Gaia-CRF3)}.
-\newblock {\em Astronomy \& Astrophysics}, 667:A148, November 2022.
+\bibitem{GaiaDR32023}
+{Gaia Collaboration}.
+\newblock Gaia data release 3.
+\newblock {\em Astronomy \& Astrophysics}, 2023.
+\newblock \url{https://archives.esac.esa.int/gaia}.
 
 \bibitem{GAVIP2016}
-D.~{Vagg}, D.~{O'Callaghan}, S.~{McBreen}, et~al.
-\newblock {GAVIP: A platform for Gaia data analysis}.
-\newblock In {\em Software and Cyberinfrastructure for Astronomy IV}, volume 9913, 2016.
+{ESA Gaia Archive}.
+\newblock Gaia archive visualisation and interface platform (gavip), 2016.
 
-\bibitem{GaiaDR32023}
-{Gaia Collaboration}, A.~{Vallenari}, A.~G.~A. {Brown}, et~al.
-\newblock {Gaia Data Release 3: Summary of the content and survey properties}.
-\newblock {\em Astronomy \& Astrophysics}, 674:A1, 2023.
+\bibitem{dinsql2023}
+Mohammadreza Pourreza and Davood Rafiei.
+\newblock {DIN-SQL}: Decomposed in-context learning of text-to-{SQL} with self-correction.
+\newblock {\em Advances in Neural Information Processing Systems}, 36, 2023.
 
-\bibitem{GaiaDR4_Cosmos}
-{European Space Agency}.
-\newblock {Gaia Data Release 4 (DR4) Content and Survey Properties}.
-\newblock ESA Cosmos Portal, 2026.
-\newblock Accessed: March 2026.
+\bibitem{macsql2023}
+Bing Wang, Changyu Ren, Jian Yang, Xinnian Liang, Jiaqi Liang, Lixin Cui, Binyuan Shi, Ruoming Zhang, Yue Zheng, Yanlin Su, Chuanqi Li, and Zhixing Mao.
+\newblock {MAC-SQL}: Multi-agent collaborative framework for text-to-{SQL}.
+\newblock {\em arXiv preprint arXiv:2312.11242}, 2023.
 
-\bibitem{GaiaScanningLaw2012}
-J.~H.~J. {de Bruijne}, R.~{Kohley}, and T.~{Prusti}.
-\newblock {The Gaia mission: status and spacecraft performance}.
-\newblock {\em Proceedings of SPIE}, 8442, 2012.
+\bibitem{li2023llmservedatabaseinterface}
+Jinyang Li, Binyuan Hui, Ge~Qu, Jiaxi Yang, Binhua Li, Bowen Li, Bailin Wang, Bowen Qin, Rongyu Cao, Ruiying Geng, Nan Huo, Xuanhe Zhou, Chenhao Ma, Guoliang Li, Kevin C.~C. Chang, Fei Huang, Reynold Cheng, and Yongbin Li.
+\newblock Can llm already serve as a database interface? a big bench for large-scale database grounded text-to-sqls, 2023.
 
-\bibitem{GaiaDR4_Projected_2026}
-{ESA Gaia DPAC}.
-\newblock {Gaia Data Release 4: Expected Contents and Epoch Photometry Status}.
-\newblock {\em Gaia Technical Note}, 2026.
+\bibitem{chesssql2024}
+Shayan Talaei, Mohammadreza Pourreza, Yu-Chen Chang, Azalia Mirhoseini, and Amin Saberi.
+\newblock {CHESS}: Contextual harnessing for efficient {SQL} synthesis.
+\newblock {\em arXiv preprint arXiv:2405.16755}, 2024.
 
-\bibitem{Guy2022}
-L.~P. {Guy}, A.~{Veronig}, L.~{Eyer}, et~al.
-\newblock {Gaia Data Release 3: Pulsating stars in the Gaia archive}.
-\newblock {\em Astronomy \& Astrophysics}, 674, 2022.
-
-\bibitem{Vagg2016}
-D.~{Vagg}, D.~{O'Callaghan}, S.~{McBreen}, et~al.
-\newblock {GAVIP: A Platform for Gaia Data Analysis}.
-\newblock {\em Proc. SPIE 9913}, 2016.
-
-\bibitem{Fabricius2021}
-C.~{Fabricius}, X.~{Luri}, F.~{Arenou}, et~al.
-\newblock {Gaia Early Data Release 3: Catalogue validation}.
-\newblock {\em Astronomy \& Astrophysics}, 649, 2021.
+\bibitem{chasesql2024}
+Mohammadreza Pourreza, Masoud Heidari, Ruoxi~Shang Kwon, Hailong Zhao, Chenxi Liu, and Pedram Hassanzadeh.
+\newblock {CHASE-SQL}: Multi-path reasoning and preference optimized candidate selection in text-to-{SQL}.
+\newblock {\em arXiv preprint arXiv:2410.01943}, 2024.
 
 \end{thebibliography}

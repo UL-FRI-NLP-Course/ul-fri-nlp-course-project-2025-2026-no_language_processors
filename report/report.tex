@@ -1,11 +1,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FRI Data Science_report LaTeX Template
 % Version 1.0 (28/1/2020)
-% 
+%
 % Jure Demšar (jure.demsar@fri.uni-lj.si)
 %
 % Based on MicromouseSymp article template by:
-% Mathias Legrand (legrand.mathias@gmail.com) 
+% Mathias Legrand (legrand.mathias@gmail.com)
 % With extensive modifications by:
 % Antonio Valente (antonio.luis.valente@gmail.com)
 %
@@ -20,9 +20,13 @@
 %----------------------------------------------------------------------------------------
 \documentclass[fleqn,moreauthors,10pt]{ds_report}
 \usepackage[english]{babel}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
 
-
-% ── In your preamble (before \begin{document}) ───────────────────────────────
+% ── TikZ pipeline figure ────────────────────────────────────────────────────
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, positioning, fit, backgrounds,
                 shapes.geometric, shapes.misc}
@@ -74,365 +78,318 @@
     font=\footnotesize\bfseries\sffamily,
     rotate=90, anchor=center
   },
-  note/.style={
-    font=\scriptsize\sffamily\itshape,
-    text=gray!70, text width=2.8cm, align=center
-  }
 }
 
-
 \graphicspath{{fig/}}
-
-
 
 
 %----------------------------------------------------------------------------------------
 %	ARTICLE INFORMATION
 %----------------------------------------------------------------------------------------
 
-% Header
 \JournalInfo{FRI Natural language processing course 2026}
+\Archive{Project report}
 
-% Interim or final report
-\Archive{Project report} 
-%\Archive{Final report} 
+\PaperTitle{Text-to-ADQL: Query Generation for the Gaia DR3 Database}
 
-% Article title
-\PaperTitle{Natural language processing course project: Retrieval-Augmented Generation for the Gaia dataset} 
-
-% Authors (student competitors) and their info
 \Authors{Guillem Masdemont Serra, Pietro Sestito, and Plabon Shaha}
 
-% Advisors
-\affiliation{\textit{Advisors: Slavko Žitnik}}
+\affiliation{\textit{Advisor: Aleš Žagar}}
 
-% Keywords
 \Keywords{}
 \newcommand{\keywordname}{Keywords}
 
 
 %----------------------------------------------------------------------------------------
 %	ABSTRACT
-%---------------------------------------------------------------------------------------
-
-\Abstract{This project aims at enahancing a larger public to get information from one of the most vaste and complex astronomy datasets, the Gaia one, represnting the Milky Way. In order to do so, we plan to implement a retrieval-augmented generation (RAG) system. Such system allows the users to get information through natural language rather than through the use of the Astronomic data query language (ADQL), a SQL-based language.}
 %----------------------------------------------------------------------------------------
+
+\Abstract{
+Accessing the ESA Gaia Data Release 3 (DR3) catalogue requires expertise in the Astronomical Data Query Language (ADQL) and careful query optimisation to avoid server timeouts,  creating a significant barrier for non-specialist users. To address this, we 
+present a natural language pipeline that translates human-made questions into 
+valid, safe, and executable ADQL queries, building on decomposition and 
+self-correction strategies from the text-to-SQL literature. The pipeline 
+features a two-path architecture governed by a shared cost judge that ensures 
+queries are safe to execute before submission. We evaluate the architecture on a custom dataset and we achieve a 55\% rate of structurally correct or near-correct queries. We present the results through an interactive HTML interface.}
 
 \begin{document}
 
-% Makes all text pages the same height
-\flushbottom 
-
-% Print the title and abstract box
-\maketitle 
-
-% Removes page numbering from the first page
-\thispagestyle{empty} 
+\flushbottom
+\maketitle
+\thispagestyle{empty}
 
 %----------------------------------------------------------------------------------------
 %	ARTICLE CONTENTS
 %----------------------------------------------------------------------------------------
 
-\section*{Introduction}
-	
-The aim of this project is to facilitate the access of a larger general public to the Gaia dataset, a vast and complex relational database on the Milky Way \cite{GaiaMission2016, 2022A&A...667A.148G}.
-Due to the high dimension and complexity of the topic and the dataset, the main current way of getting information from it is through the use of the Astronomic data query language (ADQL), a SQL-based language \cite{GAVIP2016}. 
-In order to make the data more accessible, we propose to implement a retrieval-augmented generation (RAG).
-Such system allows to retrieve relevant information from external data sources, properly process it and finally combine the initial query and the retrieved information to get to a final output, often through a large language model.
-One of the main advantages of such a choice is that it allows the users to get information through natural language. More specifically, considering a representative subsample of the dataset, whose whole dimension is around 10 TB, we will implement a RAG system able to answer to several different kinds of questions.
-The main areas of interest are the spatial distribution, the galactic depth analysis, the photometric characterization and the kinematics of the solar neighborhood.
+\section{Introduction}
 
+The Gaia space telescope, launched in 2013 by the European Space Agency (ESA), aims to produce the most detailed map of the Milky Way ever assembled, cataloguing approximately one billion stars with astrometric, photometric, and spectroscopic measurements \cite{GaiaMission2016}. The most recent public release, Gaia Data Release 3 (DR3, 2022), contains 1.8 billion sources described by 258 catalogue fields \cite{GaiaDR32023}, occupying $10$ TB. 
 
+Access to the data is mediated through the \href{https://archives.esac.esa.int/gaia}{Gaia Archive}, which exposes a Table Access Protocol (TAP) endpoint that accepts queries written in the Astronomical Data Query Language (ADQL\footnote{a dialect of SQL extended with geometric predicates for sky-coordinate filtering (e.g. \texttt{CONTAINS}, \texttt{CIRCLE}, \texttt{POINT}). }) \cite{GAVIP2016}. While ADQL is well-suited to the domain, executing queries programmatically within our framework poses several barriers. The \textit{astroquery.gaia} Python library is prone to connection timeouts, and on the ARNES cluster, stable \textit{TAP access} requires establishing an SSH tunnel to bypass network restrictions. Beyond this, queries against a 1.8-billion-row table are inherently delicate, and errors occur even for tightly constrained queries.
 
-%------------------------------------------------
-
-\section*{Background Studies}
-Large Language Models (LLMs) store knowledge in their parameters, and have revolutionized the field of Natural Language Processing (NLP). However, they suffer from a number of limitations, including the inability to access up-to-date information, the tendency to produce hallucinated content, and they perform poorly on tasks that require tool-use. To tackle these issues, two new paradigms have gained popularity, namely Retrieval Augmented Generation (RAG) and Tool-augmented LLMs. 
-Here we present a brief overview of these two paradigms:
-
-\subsection*{Retrieval Augmented Generation (RAG)}
-The RAG system is a combination of three fundamental components:
-
-\begin{itemize}
-	\item \textbf{Retrieval} - Responsible for retrieving relevant information from external datasources (e.g. a knowledge base, a search engine, a vector database, etc.) based on the input query. The component can be further divided into multiple subcomponents, including query reformulation, decomposition, re-packing, re-ranking, etc. 
-	\item \textbf{Augmentation} - The component is responsible for processing, extracting and summarizing the retrieved information, and preparing it to be fed to the generator.
-	\item \textbf{Generator} - Combines the input query and the retrieved information to produce the final output. The generator is typically a large language model, but it can also be a smaller model or even a rule-based system.
-\end{itemize}
-
-\subsection*{Tool Calling and Agentic LLMs}
-Tool-augmented LLMs are a paradigm in which the LLM is augmented with the ability to call external tools (e.g. a calculator, a search engine, a database, etc.) to perform specific tasks. The LLM can be trained to learn when and how to call the tools, and how to integrate the results from the tools into its output. This paradigm is particularly useful for tasks that require reasoning, multi-step problem solving, or access to up-to-date information. For example, an LLM can query a database of astronomical observations or compute physical quantities instead of approximating them through text.
-
-Agentic LLMs are a special case of tool-augmented LLMs, in which the LLM is trained to learn how to call multiple tools and how to integrate the results from the tools into its output. The agentic LLM can be trained to learn how to call the tools in a specific order, and how to use the results from the tools to perform complex tasks.
-%------------------------------------------------
-
-\begin{figure*}[htbp]
-  \centering
-  \resizebox{\textwidth}{!}{
-\begin{tikzpicture}[node distance=0.55cm and 1.8cm]
-
-% ════════════════════════════════════════════════════════════════════════
-%  COLUMN ANCHORS  (x positions)
-%  Col A: simple path   x=0
-%  Col B: complex path  x=6.2
-%  Col C: shared        x=3.1  (centred between A and B)
-% ════════════════════════════════════════════════════════════════════════
-
-% ── USER QUERY (top centre) ──────────────────────────────────────────────
-\node[userbox, minimum width=4.2cm, text width=4.0cm]
-  (userquery) at (3.1, 0)
-  {\textbf{User Query}};
-
-% ── ROUTER (LLM) ─────────────────────────────────────────────────────────
-\node[llmbox, below=0.6cm of userquery]
-  (router) at (3.1, -1.1)
-  {Router (LLM)\\[-2pt]{\scriptsize simple / complex}};
-
-% ── ROUTER DECISION ──────────────────────────────────────────────────────
-\node[decision, below=0.5cm of router]
-  (routerdec) {};
-\node[font=\scriptsize\sffamily, anchor=center] at (routerdec) {};
-
-% ════════════════════════════════════════════════════════════════════════
-%  SIMPLE PATH  (left column, x ≈ 0)
-% ════════════════════════════════════════════════════════════════════════
-
-\node[llmbox, below left=1.1cm and 2.2cm of routerdec]
-  (parser) {LLM Parser\\[-2pt]{\scriptsize query → JSON}};
-
-\node[detbox, below=of parser]
-  (jsonval) {JSON Validator};
-
-\node[detbox, below=of jsonval]
-  (buildadql) {build\_adql()};
-
-\node[detbox, below=of buildadql]
-  (adqlval) {ADQL Validator};
-
-% ════════════════════════════════════════════════════════════════════════
-%  COMPLEX PATH  (right column, x ≈ 6.2)
-% ════════════════════════════════════════════════════════════════════════
-
-\node[llmbox, below right=1.1cm and 2.2cm of routerdec]
-  (decomp) {Decomposer (LLM)\\[-2pt]{\scriptsize query → plan JSON}};
-
-\node[detbox, below=of decomp]
-  (planval) {Plan Validator};
-
-% Composition decision
-\node[decision, below=0.5cm of planval, aspect=2.2]
-  (compdec) {};
-\node[font=\scriptsize\sffamily, anchor=west, xshift=0.4cm, yshift=0.3cm] at (compdec)
-  {composition type?};
-
-% Three composition branches
-\node[detbox, below left=1.0cm and 1.6cm of compdec,
-      minimum width=2.6cm, text width=2.4cm]
-  (merged) {build\_adql\_merged()\\[-2pt]{\scriptsize one ADQL}};
-
-\node[detbox, below=1.0cm of compdec,
-      minimum width=2.6cm, text width=2.4cm]
-  (parallel) {Parallel\\[-2pt]{\scriptsize N × supervised\_pipeline}};
-
-\node[detbox, below right=1.0cm and 1.6cm of compdec,
-      minimum width=2.6cm, text width=2.4cm]
-  (sequential) {Sequential\\[-2pt]{\scriptsize source\_id injection}};
-
-% ════════════════════════════════════════════════════════════════════════
-%  SHARED SECTION  (centre, below both paths)
-% ════════════════════════════════════════════════════════════════════════
-
-% Place the cost judge below the lower of adqlval / merged+parallel+sequential
-% We use a coordinate trick: put it at a fixed y below the composition nodes
-\node[sharedbox, below=7.6cm of routerdec]
-  (costjudge)
-  {\textbf{Cost Judge}\\[-2pt]
-   {\scriptsize fast\_cost\_precheck\\[-1pt]
-    evaluate\_query\_cost\\[-1pt]
-    auto\_optimise\_adql}};
-
-\node[decision, below=0.5cm of costjudge, aspect=2.4]
-  (costdec) {};
-\node[font=\scriptsize\sffamily, anchor=center] at (costdec) {verdict?};
-
-% safe / optimise / block
-\node[detbox, below left=0.9cm and 1.5cm of costdec,
-      minimum width=2.4cm, text width=2.2cm,
-      fill=colDet!8, draw=colDet]
-  (optimise) {auto\_optimise\_adql\\[-2pt]{\scriptsize rewrite ADQL}};
-
-\node[userbox, below right=0.9cm and 1.5cm of costdec,
-      minimum width=2.0cm, text width=1.8cm,
-      fill=red!10, draw=red!70, text=red!70]
-  (blocked) {\textbf{BLOCKED}\\[-2pt]{\scriptsize retry / raise}};
-
-\node[detbox, below=0.9cm of costdec,
-      minimum width=2.2cm, text width=2.0cm]
-  (approve) {Approved};
-
-% ── run_query ────────────────────────────────────────────────────────────
-\node[detbox, below=0.7cm of approve,
-      fill=colDet!15, draw=colDet]
-  (runquery) {run\_query()\\[-2pt]{\scriptsize Gaia TAP}};
-
-% ── Output ───────────────────────────────────────────────────────────────
-\node[userbox, below=0.55cm of runquery,
-      minimum width=4.2cm, text width=4.0cm]
-  (output) {\textbf{output\_json + DataFrame}\\[-2pt]
-            {\scriptsize unified schema (both paths)}};
-
-% ════════════════════════════════════════════════════════════════════════
-%  BACKGROUND SHADING
-% ════════════════════════════════════════════════════════════════════════
-\begin{scope}[on background layer]
-
-  % Simple path lane
-  \node[fit=(parser)(jsonval)(buildadql)(adqlval),
-        fill=colBgSimple, draw=colSimple!30,
-        rounded corners=6pt, inner sep=8pt,
-        label={[lanelabel, text=colSimple!70, xshift=-0.1cm]left:Simple Path}]
-    (simplelane) {};
-
-  % Complex path lane
-  \node[fit=(decomp)(planval)(compdec)(merged)(parallel)(sequential),
-        fill=colBgComplex, draw=colComplex!30,
-        rounded corners=6pt, inner sep=8pt,
-        label={[lanelabel, text=colComplex!70, xshift=0.1cm]right:Complex Path}]
-    (complexlane) {};
-
-  % Shared section
-  \node[fit=(costjudge)(costdec)(optimise)(blocked)(approve)(runquery),
-        fill=colBgShared, draw=colShared!30,
-        rounded corners=6pt, inner sep=8pt,
-        label={[lanelabel, text=colShared!80, xshift=-0.1cm]left:Shared}]
-    (sharedlane) {};
-
-\end{scope}
-
-% ════════════════════════════════════════════════════════════════════════
-%  ARROWS
-% ════════════════════════════════════════════════════════════════════════
-
-% User → Router
-\draw[arr] (userquery) -- (router);
-\draw[arr] (router)    -- (routerdec);
-
-% Router → simple path
-\draw[arrS] (routerdec.west) -- ++(-0.5,0)
-  node[above, font=\scriptsize\sffamily, text=colSimple, pos=1.0,
-       xshift=0.2cm, yshift=0.05cm] {simple}
-  -| (parser.north);
-
-% Router → complex path
-\draw[arrC] (routerdec.east) -- ++(0.5,0)
-  node[above, font=\scriptsize\sffamily, text=colComplex, pos=1.0,
-       xshift=-0.2cm, yshift=0.05cm] {complex}
-  -| (decomp.north);
-
-% Simple path internal
-\draw[arrS] (parser)   -- (jsonval);
-\draw[arrS] (jsonval)  -- (buildadql);
-\draw[arrS] (buildadql)-- (adqlval);
-
-% Complex path internal
-\draw[arrC] (decomp)  -- (planval);
-\draw[arrC] (planval) -- (compdec);
-
-% Composition branches
-\draw[arrC] (compdec.west) -- ++(-0.4,0) |-
-  node[pos=0.3, above, font=\scriptsize\sffamily, text=colComplex] {}
-  (merged.north);
-\draw[arrC] (compdec.south) --
-  node[right, font=\scriptsize\sffamily, text=colComplex, xshift=2pt] {}
-  (parallel.north);
-\draw[arrC] (compdec.east) -- ++(0.4,0) |-
-  node[pos=0.3, above, font=\scriptsize\sffamily, text=colComplex] {}
-  (sequential.north);
-
-% Both paths converge on cost judge
-% Simple: adqlval → costjudge
-\draw[arrSh] (adqlval.south) -- ++(0,-0.3) -|
-  (costjudge.north west);
-
-% Complex merged: merged → costjudge
-\draw[arrSh] (merged.south) -- ++(0,-0.3) -|
-  (costjudge.north);
-
-% Complex parallel/sequential go through supervised_pipeline (already has cost judge)
-% Show them converging too
-\draw[arrSh] (parallel.south)   -- ++(0,-0.25) -| (costjudge.north);
-\draw[arrSh] (sequential.south) -- ++(0,-0.25) -| (costjudge.north east);
-
-% Cost judge → decision
-\draw[arrSh] (costjudge) -- (costdec);
-
-% Cost decision branches
-\draw[arrSh] (costdec.west) -- ++(-0.4,0) |-
-  node[pos=0.25, above, font=\scriptsize\sffamily,
-       text=colShared] {unsafe}
-  (optimise.north);
-\draw[arrSh] (costdec.south) --
-  node[right, font=\scriptsize\sffamily,
-       text=colShared, xshift=2pt] {safe}
-  (approve.north);
-\draw[arrSh] (costdec.east) -- ++(0.4,0) |-
-  node[pos=0.25, above, font=\scriptsize\sffamily,
-       text=red!60] {dangerous}
-  (blocked.north);
-
-% Optimised ADQL loops back to cost judge
-\draw[arrSh, dashed] (optimise.west) -- ++(-0.5,0) |-
-  (costjudge.west);
-
-% Approve → run_query → output
-\draw[arrSh] (approve)  -- (runquery);
-\draw[arrSh] (runquery) -- (output);
-
-% ════════════════════════════════════════════════════════════════════════
-%  LEGEND
-% ════════════════════════════════════════════════════════════════════════
-\node[below=0.5cm of output, xshift=0cm,
-      font=\scriptsize\sffamily, text=gray!60,
-      align=center]
-  (legend)
-  {\textcolor{colLLM}{$\rule{0.7em}{0.7em}$}~LLM call\quad
-   \textcolor{colDet}{$\rule{0.7em}{0.7em}$}~Deterministic\quad
-   \textcolor{colShared}{$\rule{0.7em}{0.7em}$}~Shared (both paths)\quad
-   \textcolor{colUser}{$\rule{0.7em}{0.7em}$}~Input / Output};
-
-\end{tikzpicture}
-  }
-  \caption{Gaia intelligent query pipeline.}
-  \label{fig:pipeline}
-\end{figure*}
-
-
-\section*{Proposed project dataset/corpus/data/..}
-
-The Gaia mission, launched by the European Space Agency has the objective of creating the largest and most precise three-dimensional map of our Galaxy, the Milky Way, by surveying approximately 1\% of its 100 billion stars \cite{GaiaMission2016, 2022A&A...667A.148G}. The most recent full dataset (2022), Gaia Data Release 3 (DR3) expanded this catalog to include radial velocities for 33 million stars and spectra for 220 million sources \cite{GaiaDR32023}. By the end of 2026, researchers expect the release of the Gaia Data Release 4 (DR4), which is projected to include more than 2.7 billion stars \cite{GaiaDR4_Cosmos}. This upcoming release will significantly increase the dimensionality of the dataset by providing more than $100$ observations for all sources \cite{GaiaScanningLaw2012}. Consequently, the information storage requirements are expected to surge from the 10 TB of DR3 to more than 500 TB of processed data for DR4 alone \cite{GaiaDR4_Projected_2026, Guy2022} eventually reaching petabyte scale by the end of the decade \cite{Vagg2016}. 
-
-
-All Gaia data releases are made accessible to the public through the official \href{https://archives.esac.esa.int/gaia}{Gaia Archive} \cite{GaiaDR32023}. The information is structured within a complex relational database, where users retrieve specific data using the SQL-based Astronomical Data Query Language (ADQL) \cite{GAVIP2016}. 
-
-Despite this open-access policy, the sheer volume and technical complexity of the dataset often present significant barriers to entry for non-professional audiences and astronomy enthusiasts \cite{Fabricius2021}. While substantial effort has been directed toward leveraging Gaia for educational outreach, the large volume of the releases is often too difficult for clasroom setting or casual exploration. 
-
-The primary objective of this project is to implement a Retrieval-Augmented Generation (RAG) system to bridge this gap. By utilizing a natural language interface, this system aims to empower the public to perform sophisticated queries, making the Gaia dataset more accessible for both educational enrichment and independent scientific inquiry.
-
-In this project, we propose to utilize the \textbf{Gaia Data Release 3 (DR3) dataset}, which is publicly available via the \href{https://archives.esac.esa.int/gaia}{official Gaia Archive}. For now, we will restrict our study to a representative subsample of the catalog and our primary focus is the construction of an automated pipeline designed to resolve the following research queries, which were purposed by \textbf{Prof. Mercè Romero} from the University of Barcelona, a rellevant institution within the Gaia Data Processing and Analysis Consortium (DPAC). 
-
+Our project builds a natural language pipeline that translates human-written 
+questions into valid, safe, and executable ADQL queries for Gaia. Our problem 
+domain is a specific instance of \emph{text-to-SQL} \cite{dinsql2023}, with 
+several complicating factors absent from standard benchmarks:
 \begin{enumerate}
-    \item \textbf{Spatial Distribution:} Which stars are located within a specific celestial region? 
-    This task involves executing a \textit{cone search} by defining a central coordinate (Right Ascension, Declination) and a search radius. The output will be a curated subset of Gaia sources within the specified solid angle.
-    
-    \item \textbf{Galactic Depth Analysis:} What is the effective limiting distance of observations toward the Galactic Center versus the North Galactic Pole? This requires a directional cone search integrated with distance estimatestable to account for parallax inversions and systematic uncertainties.
-    
-    \item \textbf{Photometric Characterization:} What is the color distribution of the stellar population in a given direction? 
-    By retrieving the color index from the \texttt{gaia\_source} table, the pipeline can generate photometric histograms to analyze stellar temperatures and evolutionary stages.
-    
-    \item \textbf{Kinematics of the Solar Neighborhood:} At what velocities do the stars nearest to the Sun rotate?
-    This involves selecting sources with high parallax values (indicating proximity). These parameters allow for the computation of total space velocity relative to the local standard of rest. 
+  \vspace{-0.1cm}
+  \item There is no existing dataset of paired natural language questions and 
+  ADQL queries for Gaia.
+  \vspace{-0.2cm}
+  \item Complex questions often require decomposition into multiple queries 
+  (e.g.\ ``\textit{show me the HR diagram and the colour histogram of the 
+  Pleiades}'' requires joining two independent queries).
+  \vspace{-0.2cm}
+  \item The Gaia TAP server enforces strict execution time limits, so generated 
+  queries must be optimised to target very specific table scans.
+  \vspace{-0.1cm}
 \end{enumerate}
 
+To address these challenges, we propose a pipeline that combines the query 
+decomposition strategy of DIN-SQL \cite{dinsql2023} with the multi-stage 
+architecture of MAC-SQL \cite{macsql2023}. The result is a two-path design with a shared deterministic cost judge that vets every query before execution, with the goal to ensure we meet the TAP server's execution time constraints. The simple path handles simple queries through a validate-build loop, while the complex path decomposes complex queries into a structured plan and processes each step through separate validate-build loops. As a concrete example, Figure~\ref{fig:report_output} shows the pipeline 
+handling \emph{``Provide me the brightest stars''}: the router classifies 
+this as a simple query with a \texttt{stellar\_population} intent, and the 
+builder produces a sky-wide ADQL filtering on apparent magnitude:
 
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, breaklines=true,
+                   frame=single, framesep=3pt]
+SELECT TOP 1000
+  source_id, ra, dec, phot_g_mean_mag, bp_rp,
+  pmra, pmdec, parallax
+FROM gaiadr3.gaia_source
+WHERE phot_g_mean_mag IS NOT NULL
+  AND MOD(random_index, 1000) = 0
+ORDER BY phot_g_mean_mag ASC
+\end{lstlisting}
+
+Since this is a sky-wide query without a spatial cone, the cost judge injects 
+a row-sampling predicate to avoid scanning the full 1.8 billion rows, rating 
+the query as moderate and returning 1,000 sources in under 5 seconds. The 
+results are displayed through an HTML interface as interactive visualisations.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\columnwidth]{fig/image.png}
+  \caption{Pipeline output for \emph{``Provide me the brightest stars.''} The 
+    simple path issues a sky-wide ADQL query ordered by apparent magnitude, 
+    returning 1,000 sources displayed on a celestial sphere projection.}
+  \label{fig:report_output}
+\end{figure}
+We evaluate our pipeline on a custom-created dataset using LLMs such as Claude-opus-4-5 and Mistral served through Snowflake Cortex AI. We observe that the proposed architecture constructs the exact intended query with a $28\%$ precision, and produces a query of equivalent intent in up to $54\%$ of cases.
+
+
+\section{Method}\label{sec:pipeline}
+
+This section describes the design of our natural language pipeline for Gaia. 
+Our problem is a specific instance of text-to-SQL, a mature research area with 
+established benchmarks such as WikiSQL and 
+BIRD~\cite{li2023llmservedatabaseinterface}. Adapting it to ADQL introduces 
+additional challenges absent from these benchmarks: domain-specific spatial 
+predicates (Contains, CIRCLE, POINT) and strict 
+server-side execution constraints. We address these through a two-path 
+architecture where every generated ADQL string passes through a shared cost 
+judge before execution, guaranteeing uniform safety across both paths. 
+
+\subsection{Data and Schema}
+
+Given the scale and complexity of the Gaia DR3 schema, a key design decision 
+is restricting the pipeline to a tractable subset of columns and query types. 
+Queries execute live in the Gaia DR3 TAP service with no local copy of the
+data, imposing two hard constraints: generated ADQL must be syntactically correct
+before dispatch, and must be cost-aware, as the server enforces a wall-clock limit of approximately 60 seconds per asynchronous job. The primary table is
+\texttt{gaiadr3.gaia\_source}, which contains 1.8 billion rows and 258 columns. We restrict the pipeline to a curated vocabulary of 18 columns covering
+astrometry\footnote{\texttt{ra}, \texttt{dec}, \texttt{parallax}, \texttt{pmra},
+\texttt{pmdec}, \texttt{radial\_velocity}}, photometry\footnote{\texttt{phot\_g\_mean\_mag}, \texttt{phot\_bp\_mean\_mag},
+\texttt{phot\_rp...}}, stellar parameters from the GSP-Phot pipeline\footnote{\texttt{teff\_gspphot}, \texttt{logg\_gspphot},
+\texttt{mh\_gspphot}}, and quality flags\footnote{\texttt{phot\_variable\_flag},
+\texttt{ruwe}}. The pipeline supports eight query intents, shown in Table~\ref{tab:intents}.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Intent} & \textbf{Cone req.} & \textbf{JOIN} & \textbf{Sky-wide} \\
+\midrule
+\texttt{cone\_search}         & \checkmark & --         & --         \\
+\texttt{color\_histogram}     & \checkmark & --         & --         \\
+\texttt{variability\_search}  & \checkmark & --         & --         \\
+\texttt{hr\_diagram}          & --         & --         & \checkmark \\
+\texttt{stellar\_population}  & --         & --         & \checkmark \\
+\texttt{velocity\_computation}& --         & --         & \checkmark \\
+\texttt{internal\_crossmatch} & --         & \checkmark & \checkmark \\
+\texttt{nearest\_neighbours}  & --         & --         & \checkmark \\
+\bottomrule
+\end{tabular}
+\caption{Supported query intents and their key ADQL constraints.}
+\label{tab:intents}
+\end{table}
+
+In the following sections we describe the full architecture as shown in Figure~\ref{fig:pipeline}, consisting of a router that classifies queries, a simple pipeline path, and a complex pipeline path.
+
+\subsection{Router}
+
+When a question is fed into the pipeline, it first passes through an LLM 
+router built on \texttt{Qwen2.5-7B} served via vLLM, following the separation of concerns of MAC-SQL \cite{macsql2023}. The router 
+is a single-turn classifier: it receives the user query and returns a two-field 
+JSON object (complexity: simple $|$ complex; reason: short string). The prompt includes ten few-shot examples 
+covering the key ambiguous cases: queries with spatial filters or crossmatches 
+that resolve to a single ADQL, and queries with conjunctions 
+(``\emph{and also}'', ``\emph{compare}'') that require multiple queries. 
+The router defaults to \emph{simple} when in doubt, reducing unnecessary use 
+of the complex path. Sampling is deterministic with \texttt{temperature=0}. 
+The query is then routed to either the simple or complex path:
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{pipeline.pdf}
+  \vspace{0.2cm}
+  \caption{Overview of the proposed pipeline. A router classifies each query as
+    simple or complex and dispatches it to the corresponding path. Both paths
+    converge on a shared cost judge before executing the final ADQL query against
+    the Gaia TAP server.}
+  \label{fig:pipeline}
+\end{figure}
+
+\subsection{Simple Pipeline Path}
+
+The simple path handles single-intent queries through a four-stage loop with up to
+three retries.
+
+\paragraph{Stage 1 --- LLM Parser.}
+
+The parser maps the input question to a fixed JSON schema with eight fields: 
+the query intent (one of the eight types in Table~\ref{tab:intents}), a spatial 
+anchor (right ascension, declination, and radius), a column selection list, 
+WHERE filters as typed range or equality constraints, a join table, and a row 
+limit. Following the schema-pruning principle of CHESS \cite{chesssql2024}, 
+the system prompt exposes only the valid column set alongside intent descriptions and ten worked examples, mitigating column hallucination.
+
+\paragraph{Stage 2 --- JSON Validator.}
+A deterministic function validates the parsed JSON and enforces a correct format,
+checking that:
+\begin{itemize}
+  \vspace{-0.1cm}
+  \item The chosen intent is in the supported set of Table~\ref{tab:intents} and
+  all mandatory fields are filled with non-null values.
+  \vspace{-0.2cm}
+  \item All column names are in \texttt{VALID\_COLUMNS} and spatial fields are
+  numeric and within valid ranges ($0 \le \text{ra} \le 360$,
+  $-90 \le \text{dec} \le 90$, radius $\le 10^\circ$).
+  \vspace{-0.1cm}
+\end{itemize}
+On failure, a structured correction prompt containing the invalid JSON, a numbered
+error list, and the original query is fed back to the parser for up to three
+retries, following the self-correction loop design of DIN-SQL \cite{dinsql2023} and
+CHASE-SQL~\cite{chasesql2024}.
+
+\paragraph{Stage 3 --- ADQL Builder.}
+
+Once the JSON is validated, a deterministic builder constructs the ADQL by 
+applying an intent-specific template. Every query includes a fixed set of base 
+columns; cone-required intents use a spatial containment predicate; for queries 
+involving stellar parameters such as temperature or metallicity, results are 
+filtered to only include stars where those measurements are available, since 
+they are not recorded for every source in the catalogue; and all intents order 
+results by a random index for unbiased sampling, except for nearest neighbours 
+which orders by parallax in descending order.
+
+\paragraph{Stage 4 --- ADQL Validator.}
+Once the ADQL is built, a final deterministic check verifies that it contains no literal \texttt{None} (indicating an unresolved coordinate), a \texttt{TOP} clause (to bound the result set), and a \texttt{WHERE} clause (to avoid a full-table scan). Any failure re-enters the correction loop with a structured error prompt.
+
+\subsection{Complex Path}
+
+In case the router detects a complex query, it triggers the complex path, which 
+handles requests that require combining multiple ADQL queries. The path operates 
+in three stages: planning, validation, and execution.
+  
+\paragraph{Decomposer (planning)}
+The first stage converts the natural language query into a structured plan via 
+an LLM call with a dedicated system prompt and five few-shot examples. The plan 
+describes \emph{what} needs to be done, declaring a composition type 
+(\textit{merged}, \textit{parallel}, or \textit{sequential}), a shared spatial 
+region, and the list of sub-queries to execute, but does not generate any 
+ADQL at this stage.
+
+\paragraph{Plan Validator}
+Before any query is built, a deterministic validator checks that the plan is 
+coherent: merged plans must have at least two compatible intents and a defined 
+spatial region; sequential plans must have no circular dependencies; and any 
+intent requiring a spatial cone must have a region specified. Only once the 
+plan passes validation does the pipeline proceed to execution.
+
+\paragraph{Composition modes (executor)}
+The validated plan is then executed according to its composition type, producing 
+the final ADQL queries. \textbf{Merged}: two or more analyses on the same region 
+are combined into a single ADQL query. \textbf{Parallel}: independent queries 
+are dispatched through the simple path separately, each returning its own 
+dataset. \textbf{Sequential}: dependent queries where the results of step $n$ 
+are injected into step $n+1$ as a filter on source identifiers, forming a chain 
+of nested queries.
+
+
+\paragraph{Outer retry loop.}
+
+If any step fails, the orchestrator 
+builds a plan-level correction prompt and re-enters the decomposer for up to 
+two more retries.
+
+
+\subsection{Shared Cost Judge}
+
+After the query is produced, either by the simple or complex path, it is not executed immediately. Given the strict execution time limits of the Gaia TAP server, every generated ADQL first passes through a shared cost judge that determines whether the query is safe to execute as-is, requires optimisation, or should be rejected. We adapt the scoring of CHASE-SQL \cite{chasesql2024}, so we score queries by execution safety rather than answer quality. The judge comprises three components:
+
+\textbf{Fast pre-check} (rule-based, no LLM): immediately flags as dangerous any
+query missing a \texttt{WHERE} clause (would scan all 1.8 billion rows) or a
+\texttt{TOP} clause, or with \texttt{TOP} exceeding 100,000.
+
+\textbf{LLM judge}: queries that pass the pre-check are scored on a 0--100 scale
+by a separate LLM call. The judge returns a verdict
+(cheap/moderate/expensive/dangerous), a score,
+and concrete rewrite suggestions. Scores 0--25 are safe to run as-is; 26--75
+trigger the auto-optimiser; 76--100 re-enter the correction loop.
+
+\textbf{Auto-optimiser}: applies a sequence of deterministc rewrites to make
+the query progressively more constrained and easy to retrieve. Specifically we use
+\textit{MOD(random\_index, N) = 0} for sky-wide queries without a cone, with $N$ ranging from $100$ to $100000$ based on score. This enables uniform sampling over a reduced subset.
+
+Once the cost judge pass is finished, the output is a JSON record containing the ADQL query, the plan and the per-step ADQL strings. The json can then be used to query Gaia. 
+
+\section{Evaluation}
+\label{sec:evaluation}
+
+\subsection{Dataset}
+Since no text-to-ADQL benchmark exists for Gaia DR3, we generated an evaluation corpus using Snowflake AI Cortex and calling mistral-large and claude-opus-4-5. The generation prompt is constrained to use the 18 valid columns, the eight intent templates, and a single WHERE filter per query, ensuring structural compatibility with the pipeline output. We restrict the evaluation to the four intents that admit simple single-filter queries. For position-based queries, we ground the dataset on 10 well-known stellar objects, ensuring that coordinates are real and verifiable rather than hallucinated. We generate 10 question-ADQL pairs per intent for a total of 40 examples.
+
+\subsection{Results}
+
+Each generated query is evaluated against its reference using five binary checks. A predicted query is considered correct if its result set is contained within the ground truth dataset, meaning it must be at least as restrictive as the reference. This is verified through five checks: the predicted SELECT must cover at least all reference columns; all reference WHERE constraints must be present in the predicted query; the intent must match; each numeric constraint must be satisfied at least as tightly; and for spatial queries, the cone centre must lie within $0.5^{\circ}$ of the reference and the predicted radius must not exceed it. A query is \emph{valid} only if all five checks pass.
+
+To characterise the failure modes more precisely, we classify each row into
+four outcomes: \emph{pass} (all five checks satisfied), \emph{near-pass}
+(exactly one check failed), \emph{fail} (two or more checks failed), and
+\emph{no\_render} (the pipeline returned no ADQL, either through an
+exception or a 10-second timeout). Results are displayed in Figure \ref{fig:eval}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{evaluation.png}
+    \caption{Pipeline performance per intent on the 40-query evaluation set.
+    Green bars indicate fully valid predictions, blue bars indicate near-misses 
+    (a single failing check), red bars indicate failures with two or more failing 
+    checks, and grey bars indicate queries the pipeline could not render.}
+    \label{fig:eval}
+\end{figure}
+
+Figure~\ref{fig:eval} shows the outcome distribution per intent. Overall, 22 out 
+of 40 queries (55\%) are at least structurally close to the reference, with 11 
+fully valid and 11 near-misses, giving a strict pass rate of 28\%. The HR diagram  intent performs best, as its fixed mandatory clauses leave little room for the model to drift. Cone search and nearest neighbours share the same distribution, with most failures concentrated in the spatial radius check. This is the least critical constraint, since a slightly wrong radius still retrieves a meaningful dataset. The 11 near-misses are the most rellevant finding: each of these queries fails on exactly one check, meaning a single targeted correction would make them fully valid. This suggests that improvements to coordinate resolution and intent disambiguation would yield large gains without any architectural changes to the pipeline
+
+\section{Conclusion}
+
+We presented a natural language pipeline for querying the Gaia DR3 catalogue and translating human questions into valid and executable ADQL queries. The two-path architecture successfully handles both simple and complex queries while respecting the strict execution constraints of the TAP server. Evaluated on a custom dataset of 40 examples, the pipeline achieves a 28\% strict pass rate and a 55\% rate of structurally correct or near-correct queries. These results, suggests that improvements on the coordinate resolution and intent disambiguation would yield substantial gains. Future work could include expanding the evaluation dataset, supporting the remaining query intents, and fine-tuning the QWEN2.5-7B model on data to further close the gap between near-miss and fully valid predictions.
 
 
 %----------------------------------------------------------------------------------------

@@ -5,37 +5,60 @@
 \providecommand \babel@aux [2]{\global \let \babel@toc \@gobbletwo }
 \@nameuse{bbl@beforestart}
 \citation{GaiaMission2016}
-\citation{2022A&A...667A.148G}
+\citation{GaiaDR32023}
 \citation{GAVIP2016}
+\citation{dinsql2023}
+\citation{dinsql2023}
+\citation{macsql2023}
 \babel@aux{english}{}
-\citation{GaiaMission2016}
-\citation{2022A&A...667A.148G}
-\citation{GaiaDR32023}
-\citation{GaiaDR4_Cosmos}
-\citation{GaiaScanningLaw2012}
-\citation{GaiaDR4_Projected_2026}
-\citation{Guy2022}
-\citation{Vagg2016}
-\citation{GaiaDR32023}
-\citation{GAVIP2016}
-\citation{Fabricius2021}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\citation{li2023llmservedatabaseinterface}
+\citation{macsql2023}
+\citation{chesssql2024}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Pipeline output for \emph  {``Provide me the brightest stars.''} The simple path issues a sky-wide ADQL query ordered by apparent magnitude, returning 1,000 sources displayed on a celestial sphere projection.}}{2}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:report_output}{{1}{2}{Pipeline output for \emph {``Provide me the brightest stars.''} The simple path issues a sky-wide ADQL query ordered by apparent magnitude, returning 1,000 sources displayed on a celestial sphere projection}{figure.caption.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Method}{2}{section.2}\protected@file@percent }
+\newlabel{sec:pipeline}{{2}{2}{Method}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Data and Schema}{2}{subsection.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Supported query intents and their key ADQL constraints.}}{2}{table.caption.2}\protected@file@percent }
+\newlabel{tab:intents}{{1}{2}{Supported query intents and their key ADQL constraints}{table.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Router}{2}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Simple Pipeline Path}{2}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stage 1 --- LLM Parser.}{2}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stage 2 --- JSON Validator.}{2}{subsection.2.3}\protected@file@percent }
+\citation{dinsql2023}
+\citation{chasesql2024}
+\citation{chasesql2024}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Overview of the proposed pipeline. A router classifies each query as simple or complex and dispatches it to the corresponding path. Both paths converge on a shared cost judge before executing the final ADQL query against the Gaia TAP server.}}{3}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:pipeline}{{2}{3}{Overview of the proposed pipeline. A router classifies each query as simple or complex and dispatches it to the corresponding path. Both paths converge on a shared cost judge before executing the final ADQL query against the Gaia TAP server}{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Stage 3 --- ADQL Builder.}{3}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stage 4 --- ADQL Validator.}{3}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Complex Path}{3}{subsection.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Decomposer (planning)}{3}{subsection.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Plan Validator}{3}{subsection.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Composition modes (executor)}{3}{subsection.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Outer retry loop.}{3}{subsection.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Shared Cost Judge}{3}{subsection.2.5}\protected@file@percent }
 \bibstyle{unsrt}
 \bibdata{report}
 \bibcite{GaiaMission2016}{1}
-\bibcite{2022A&A...667A.148G}{2}
+\bibcite{GaiaDR32023}{2}
 \bibcite{GAVIP2016}{3}
-\bibcite{GaiaDR32023}{4}
-\bibcite{GaiaDR4_Cosmos}{5}
-\bibcite{GaiaScanningLaw2012}{6}
-\bibcite{GaiaDR4_Projected_2026}{7}
-\bibcite{Guy2022}{8}
-\@writefile{toc}{\contentsline {section}{References}{2}{Item.4}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Gaia intelligent query pipeline.}}{3}{figure.caption.1}\protected@file@percent }
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:pipeline}{{1}{3}{Gaia intelligent query pipeline}{figure.caption.1}{}}
-\bibcite{Vagg2016}{9}
-\bibcite{Fabricius2021}{10}
-\newlabel{LastPage}{{}{4}{}{page.4}{}}
-\gdef\lastpage@lastpage{4}
-\gdef\lastpage@lastpageHy{4}
-\gdef \@abspage@last{4}
+\bibcite{dinsql2023}{4}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Evaluation}{4}{section.3}\protected@file@percent }
+\newlabel{sec:evaluation}{{3}{4}{Evaluation}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Dataset}{4}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Results}{4}{subsection.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Pipeline performance per intent on the 40-query evaluation set. Green bars indicate fully valid predictions, blue bars indicate near-misses (a single failing check), red bars indicate failures with two or more failing checks, and grey bars indicate queries the pipeline could not render.}}{4}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:eval}{{3}{4}{Pipeline performance per intent on the 40-query evaluation set. Green bars indicate fully valid predictions, blue bars indicate near-misses (a single failing check), red bars indicate failures with two or more failing checks, and grey bars indicate queries the pipeline could not render}{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Conclusion}{4}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{4}{section.4}\protected@file@percent }
+\bibcite{macsql2023}{5}
+\bibcite{li2023llmservedatabaseinterface}{6}
+\bibcite{chesssql2024}{7}
+\bibcite{chasesql2024}{8}
+\newlabel{LastPage}{{4}{5}{Conclusion}{page.5}{}}
+\gdef\lastpage@lastpage{5}
+\gdef\lastpage@lastpageHy{5}
+\gdef \@abspage@last{5}
