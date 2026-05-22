@@ -58,8 +58,8 @@ User natural-language query
 
 The pipeline parses the query, builds a validated ADQL query, confirms the cost is cheap, fetches 634 sources from Gaia DR3, and produces a full visual report.
 
-![alt text](image.png)
-![alt text](image-1.png)
+![alt text](report/fig/red_dwarfs_1.png)
+![alt text](report/fig/red_dwarfs_2.png)
 
 ## Future directions
 
