@@ -1,4 +1,4 @@
-# Gaia Intelligent Query Pipeline
+# Query Generation for the Gaia DR3 Database
 ### Natural Language Interface for the ESA Gaia DR3 Catalogue
 
 **Guillem Masdemont Serra · Pietro Sestito · Plabon Shaha**  
