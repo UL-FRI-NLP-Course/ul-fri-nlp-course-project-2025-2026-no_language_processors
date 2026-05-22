@@ -51,7 +51,7 @@ The system parses the intent, builds a validated and cost-checked ADQL query, ex
 ## Pipeline Architecture
 
 <p align="center">
-  <img src="report/fig/pipeline.png" alt="Pipeline architecture" width="500">
+  <img src="report/fig/pipeline.png" alt="Pipeline architecture" width="450">
 </p>
 
 ### Simple vs. Complex path
@@ -87,7 +87,7 @@ The parser recognises eight intent types:
 
 ## Evaluation Results
 
-Tested on a custom benchmark of 87 NL→ADQL pairs across three difficulty tiers (simple / medium / complex):
+Tested on a custom benchmark of 40 NL→ADQL pairs covering four intent types:
 
 | Metric | Score |
 |--------|-------|
@@ -114,7 +114,7 @@ See `src/dataset/gaia_eval_dataset.csv` for the benchmark and `src/dataset/eval_
     ├── display_html.py          # Standalone HTML report generator
     ├── gaia_report.html         # Example output: brightest stars query
     ├── dataset/
-    │   ├── gaia_eval_dataset.csv        # NL→ADQL benchmark (87 pairs)
+    │   ├── gaia_eval_dataset.csv        # NL→ADQL benchmark (40 pairs, 4 intents)
     │   ├── eval_resultss.csv            # Evaluation results per query
     │   └── generated_dataset.ipynb      # Notebook used to generate the dataset
     ├── docker/

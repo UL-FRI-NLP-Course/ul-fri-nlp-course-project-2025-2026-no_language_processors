@@ -1,6 +1,13 @@
 # Source Code Guide
 
-This directory contains everything needed to run and evaluate the Gaia Intelligent Query Pipeline. The entry points are the two Jupyter notebooks in `pipeline/`. All other modules are imported by them.
+This directory contains everything needed to run and evaluate the Gaia Intelligent Query Pipeline.
+
+**There are two entry points, both in `pipeline/`:**
+
+- **`main.ipynb`** — run a query end-to-end through the pipeline and inspect results
+- **`evaluate_pipeline.ipynb`** — batch-evaluate the pipeline against the benchmark dataset
+
+All other modules are imported by these notebooks; you do not need to call them directly.
 
 > **Reminder:** The pipeline requires GPU + the Qwen2.5-7B model. It cannot be run on a laptop. See the root README for HPC setup instructions.
 
@@ -24,7 +31,7 @@ src/
 │   ├── eval_metrics.py       BLEU, token-F1, structural similarity scoring
 │   └── display_html.py       Interactive HTML report generator
 ├── dataset/            ← Benchmark data and evaluation results
-│   ├── gaia_eval_dataset.csv     87 NL→ADQL pairs (simple/medium/complex)
+│   ├── gaia_eval_dataset.csv     40 NL→ADQL pairs (4 intent types)
 │   ├── eval_resultss.csv         Per-query evaluation results
 │   └── generated_dataset.ipynb   Notebook used to generate the dataset
 ├── docker/             ← HPC deployment
@@ -205,33 +212,18 @@ All figures are embedded as base64 PNGs; Plotly charts are included as interacti
 
 ## Dataset
 
-`dataset/gaia_eval_dataset.csv` contains 87 NL→ADQL pairs across three tiers:
+`dataset/gaia_eval_dataset.csv` contains 40 NL→ADQL pairs covering four intent types:
 
-| Tier | Description | Count |
-|------|-------------|-------|
-| Simple | Single intent, single region, no joins | ~30 |
-| Medium | Joins, computed columns, multiple filters | ~30 |
-| Complex | Multi-step, cross-matching, sequential | ~27 |
+| Intent | Count |
+|--------|-------|
+| `cone_search` | 10 |
+| `hr_diagram` | 10 |
+| `stellar_population` | 10 |
+| `variability_search` | 10 |
 
-Each row has: `query` (natural language), `adql` (ground-truth ADQL), `tier`, and metadata fields.
+Each row has: `query` (natural language), `adql` (ground-truth ADQL), `intent`, and metadata fields.
 
 `dataset/eval_resultss.csv` contains the per-query results from running the pipeline against this benchmark, with columns for each metric.
 
 ---
 
-## Docker / HPC
-
-`docker/vllm.def` is an Apptainer (formerly Singularity) container recipe that builds a self-contained environment with:
-- Ubuntu 22.04 + CUDA 12.4
-- Python 3.11
-- PyTorch 2.4.1 (CUDA 12.4 build)
-- vLLM 0.6.6
-- Full HuggingFace stack
-- All data science and Jupyter dependencies
-
-`docker/vllm.sh` is the SLURM submission script that:
-1. Requests 1 GPU, 4 CPUs, 32 GB RAM
-2. Launches Jupyter Lab inside the container
-3. Prints the SSH tunnel command to connect from your laptop
-
-See the root README for step-by-step HPC setup.
