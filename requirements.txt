@@ -1,0 +1,70 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# requirements.txt — Gaia Intelligent Query Pipeline
+#
+# NOTE: This project CANNOT be run locally. It requires:
+#   • An NVIDIA GPU with CUDA 12.4 support (≥ 24 GB VRAM recommended)
+#   • The Qwen2.5-7B-Instruct model pre-downloaded via HuggingFace
+#   • An Apptainer/Singularity container built from src/docker/vllm.def
+#
+# This file documents all runtime dependencies for reference and for
+# reproducing the container environment. See src/docker/vllm.def for the
+# canonical build recipe and src/docker/vllm.sh for the SLURM job script.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── PyTorch (CUDA 12.4 build — install via extra-index-url) ──────────────────
+# pip install torch==2.4.1+cu124 torchvision==0.19.1+cu124 torchaudio==2.4.1+cu124 \
+#             --extra-index-url https://download.pytorch.org/whl/cu124
+torch==2.4.1+cu124
+torchvision==0.19.1+cu124
+torchaudio==2.4.1+cu124
+
+# ── LLM inference engine ──────────────────────────────────────────────────────
+vllm==0.6.6.post1
+
+# ── HuggingFace stack ─────────────────────────────────────────────────────────
+transformers>=4.45.0,<4.50.0
+accelerate
+huggingface_hub
+sentencepiece
+tiktoken
+protobuf
+datasets
+tokenizers
+peft
+trl
+einops
+safetensors
+bitsandbytes
+
+# ── Data science ──────────────────────────────────────────────────────────────
+numpy
+pandas
+scipy
+scikit-learn
+
+# ── Astronomy ─────────────────────────────────────────────────────────────────
+astropy
+astroquery
+h5py
+
+# ── Visualisation ─────────────────────────────────────────────────────────────
+matplotlib
+seaborn
+plotly
+kaleido
+
+# ── Jupyter environment ───────────────────────────────────────────────────────
+jupyterlab
+ipywidgets
+ipykernel
+nbformat
+nbconvert
+jupyter_contrib_nbextensions
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+requests
+tqdm
+rich
+typer
+pydantic
+python-dotenv
