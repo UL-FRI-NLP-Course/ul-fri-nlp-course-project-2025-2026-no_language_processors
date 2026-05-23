@@ -154,7 +154,7 @@ Everything is already set up there. Run:
 sbatch vllm.sh
 ```
 
-This initializes a partition for running the Jupyter notebook. The next step is to create an SSH tunnel from your localhost to Arnes. To do this, go to the `logs` folder and check the latest `.log` file, it should be named something like `vllm_XXXXXX.out`.
+This initializes a partition for running the Jupyter notebook (it may take some minutes). The next step is to create an SSH tunnel from your localhost to Arnes. To do this, go to the `logs` folder and check the latest `.log` file, it should be named something like `vllm_XXXXXX.out`.
 
 Open a new terminal on your local computer and create the tunnel by copying the SSH command from the log file, this is copying a similar command to: 
 
