@@ -142,7 +142,48 @@ See `src/dataset/gaia_eval_dataset.csv` for the benchmark and `src/dataset/eval_
 
 ## Running on the ARNES HPC
 
-### 1. Build the container (once)
+There are two ways of running our project: either from our pre-created folder, or by cloning the repo and building a `.sif` file. We recommend the first option. Login to arnes and go to: 
+
+```bash
+/d/hpc/projects/onj_fri/no-language-processors-v2
+```
+
+Everything is already set up there. Run:
+
+```bash
+sbatch vllm.sh
+```
+
+This initializes a partition for running the Jupyter notebook. The next step is to create an SSH tunnel from your localhost to Arnes. To do this, go to the `logs` folder and check the latest `.log` file, it should be named something like `vllm_XXXXXX.out`.
+
+Open a new terminal on your local computer and create the tunnel by copying the SSH command from the log file, this is copying a similar command to: 
+
+```bash
+ssh -N -L 9172:wn218.arnes.si:9172 gm64359@hpc-login.arnes.si
+```
+
+The ports and numbers in the command will be different. Remember to replace `gm64359` with your username. If successful, the terminal will appear to hang — that means the SSH tunnel is up. Then open the localhost with the port specified in the logs file. It will be something similar to this: 
+
+```bash
+http://localhost:9172
+```
+
+Similarly, for the token password in the localhost, copy the token from the end of this line in the logs:
+
+```
+http://wn218.arnes.si:9172/lab?token=b99b314fca107c37007c8db4902f51b2fbbe4ea5359b370d
+```
+
+This is copying: 
+
+```bash
+b99b314fca107c37007c8db4902f51b2fbbe4ea5359b370d
+```
+
+In every case, the token is different. 
+
+
+### Second option: 1. Build the container (once)
 
 ```bash
 # On the HPC login node
